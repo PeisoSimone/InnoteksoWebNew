@@ -1,4 +1,5 @@
 using InnoteksoWeb.Models;
+using innoteksoWebNew.Models;
 
 namespace InnoteksoWebNew.Services
 {

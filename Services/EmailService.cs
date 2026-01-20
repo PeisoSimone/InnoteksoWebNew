@@ -2,6 +2,8 @@ using innoteksoWebNew.Models;
 using System.Net;
 using System.Net.Mail;
 using Microsoft.Extensions.Configuration;
+using InnoteksoWebNew.Services;
+using InnoteksoWeb.Models;
 
 namespace innoteksoWebNew.Services
 {

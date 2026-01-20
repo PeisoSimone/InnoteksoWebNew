@@ -1,0 +1,297 @@
+/* ============================================
+   CUSTOM QUOTE MODAL ENHANCEMENTS
+   ============================================ */
+
+/* Custom Checkbox Grid */
+.custom-options-checkboxes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+.custom-checkbox-item {
+    position: relative;
+}
+
+.custom-checkbox-item input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.custom-checkbox-item label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid rgba(0, 102, 255, 0.2);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    color: #C5C9D4;
+    margin: 0;
+}
+
+.custom-checkbox-item label i {
+    font-size: 1.25rem;
+    color: #0066FF;
+    transition: all 0.3s ease;
+}
+
+.custom-checkbox-item input[type="checkbox"]:checked + label {
+    background: rgba(0, 102, 255, 0.15);
+    border-color: #0066FF;
+    color: #FFFFFF;
+    box-shadow: 0 0 20px rgba(0, 102, 255, 0.3);
+}
+
+.custom-checkbox-item input[type="checkbox"]:checked + label i {
+    color: #00D9FF;
+    transform: scale(1.2);
+}
+
+.custom-checkbox-item:hover label {
+    border-color: rgba(0, 102, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+/* Form Text Helper */
+.form-text {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Enhanced Alert Styling */
+.alert {
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    animation: slideInFromTop 0.4s ease;
+}
+
+@keyframes slideInFromTop {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.alert-success {
+    background: linear-gradient(135deg, rgba(0, 230, 118, 0.15) 0%, rgba(0, 230, 118, 0.05) 100%);
+    border: 2px solid rgba(0, 230, 118, 0.4);
+    color: #00E676;
+}
+
+.alert-success i {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, rgba(255, 107, 107, 0.15) 0%, rgba(255, 107, 107, 0.05) 100%);
+    border: 2px solid rgba(255, 107, 107, 0.4);
+    color: #FF6B6B;
+}
+
+.alert-danger i {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+/* Optgroup Styling */
+.form-control optgroup {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #00D9FF;
+    background: rgba(0, 102, 255, 0.1);
+    padding: 0.5rem 0;
+}
+
+.form-control option {
+    padding: 0.75rem 1rem;
+    font-weight: 500;
+}
+
+/* Row spacing for modal forms */
+.modal-body .row {
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+}
+
+.modal-body .row > [class*="col-"] {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+/* Enhanced Button States */
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-primary:disabled:hover {
+    transform: none;
+    box-shadow: 0 4px 15px rgba(0, 102, 255, 0.4);
+}
+
+/* Responsive adjustments for custom options */
+@media (max-width: 768px) {
+    .custom-options-checkboxes {
+        grid-template-columns: 1fr;
+    }
+    
+    .custom-checkbox-item label {
+        padding: 0.875rem 1rem;
+        font-size: 0.95rem;
+    }
+}
+
+/* ============================================
+   ENHANCED CUSTOM SOLUTIONS SECTION BUTTON
+   ============================================ */
+
+.solutions-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.1rem 2.5rem;
+    background: linear-gradient(135deg, #0066FF 0%, #00D9FF 100%);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 102, 255, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.solutions-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+.solutions-button:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.solutions-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(0, 102, 255, 0.6);
+}
+
+.solutions-button:active {
+    transform: translateY(-1px);
+}
+
+.solutions-button i {
+    font-size: 1.25rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* ============================================
+   ENHANCED SUGGESTIONS CARDS
+   ============================================ */
+
+.custom-suggestions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.suggestion-card {
+    background: linear-gradient(180deg, rgba(26, 34, 56, 0.6) 0%, rgba(10, 17, 40, 0.8) 100%);
+    border: 2px solid rgba(0, 102, 255, 0.2);
+    border-radius: 15px;
+    padding: 1.75rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.suggestion-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(0, 102, 255, 0.6);
+    box-shadow: 0 10px 30px rgba(0, 102, 255, 0.3);
+}
+
+.suggestion-card-icon {
+    font-size: 2.5rem;
+    color: #00D9FF;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.suggestion-card h4 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin-bottom: 0.75rem;
+}
+
+.suggestion-card p {
+    font-size: 0.95rem;
+    color: #9CA3AF;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.suggestion-card-examples {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0, 102, 255, 0.2);
+}
+
+.suggestion-card-examples strong {
+    display: block;
+    color: #00D9FF;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+}
+
+.suggestion-card-examples ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.suggestion-card-examples li {
+    font-size: 0.875rem;
+    color: #C5C9D4;
+    padding: 0.25rem 0;
+    padding-left: 1.25rem;
+    position: relative;
+}
+
+.suggestion-card-examples li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #0066FF;
+    font-weight: bold;
+}

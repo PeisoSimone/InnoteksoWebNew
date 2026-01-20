@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace innoteksoWebNew.Models
+namespace InnoteksoWeb.Models
 {
     public class CustomQuoteModel
     {
