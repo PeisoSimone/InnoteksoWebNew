@@ -1,0 +1,626 @@
+﻿/* ============================================
+   UNIFIED CARD STYLES - ALL CARDS MATCH CUSTOM INSTALLATIONS
+   This CSS updates Services and Packages cards to match the
+   Custom Installations card styling
+   ============================================ */
+
+/* ============================================
+   SERVICES SECTION - UPDATED TO MATCH CUSTOM INSTALLATIONS
+   ============================================ */
+
+.service-card-clean {
+    background: linear-gradient(180deg, rgba(26, 34, 56, 0.8) 0%, rgba(10, 17, 40, 0.9) 100%);
+    border: 2px solid rgba(0, 102, 255, 0.2);
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+    /* Top border gradient effect */
+    .service-card-clean::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #0066FF, #00D9FF, #0066FF, transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .service-card-clean:hover {
+        transform: translateY(-8px);
+        border-color: rgba(0, 102, 255, 0.6);
+        box-shadow: 0 15px 40px rgba(0, 102, 255, 0.3);
+    }
+
+        .service-card-clean:hover::before {
+            opacity: 1;
+        }
+
+/* Service Icon - Updated to circular container */
+.service-icon-clean {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    background: linear-gradient(135deg, rgba(0, 102, 255, 0.2), rgba(0, 217, 255, 0.2));
+    border: 2px solid rgba(0, 102, 255, 0.4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+    .service-icon-clean i {
+        font-size: 2.5rem;
+        color: #00D9FF;
+        transition: all 0.3s ease;
+    }
+
+.service-card-clean:hover .service-icon-clean {
+    transform: scale(1.1) rotate(10deg);
+    background: linear-gradient(135deg, rgba(0, 102, 255, 0.3), rgba(0, 217, 255, 0.3));
+    box-shadow: 0 0 30px rgba(0, 217, 255, 0.5);
+}
+
+    .service-card-clean:hover .service-icon-clean i {
+        transform: rotate(-10deg);
+    }
+
+/* Service Title */
+.service-title-clean {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin-bottom: 0.75rem;
+}
+
+/* Service Description */
+.service-description-clean {
+    font-size: 0.95rem;
+    color: #9CA3AF;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+/* Learn More Button */
+.btn-service-learn {
+    background: transparent;
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+    .btn-service-learn:hover {
+        background: linear-gradient(135deg, #0066FF 0%, #00D9FF 100%);
+        color: #FFFFFF;
+        border-color: transparent;
+        transform: scale(1.05);
+        box-shadow: 0 4px 15px rgba(0, 102, 255, 0.5);
+    }
+
+/* ============================================
+   PACKAGES SECTION - UPDATED TO MATCH CUSTOM INSTALLATIONS
+   ============================================ */
+
+.pricing-card-clean {
+    background: linear-gradient(180deg, rgba(26, 34, 56, 0.8) 0%, rgba(10, 17, 40, 0.9) 100%);
+    border: 2px solid rgba(0, 102, 255, 0.2);
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+    /* Top border gradient effect */
+    .pricing-card-clean::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #0066FF, #00D9FF, #0066FF, transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .pricing-card-clean:hover {
+        transform: translateY(-8px);
+        border-color: rgba(0, 102, 255, 0.6);
+        box-shadow: 0 15px 40px rgba(0, 102, 255, 0.3);
+    }
+
+        .pricing-card-clean:hover::before {
+            opacity: 1;
+        }
+
+/* Popular Package Badge */
+.popular-card-clean::after {
+    content: 'MOST POPULAR';
+    position: absolute;
+    top: 15px;
+    right: -35px;
+    background: linear-gradient(135deg, #0066FF 0%, #00D9FF 100%);
+    color: #FFFFFF;
+    padding: 5px 40px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    transform: rotate(45deg);
+    box-shadow: 0 4px 8px rgba(0, 102, 255, 0.5);
+}
+
+/* Package Header */
+.package-header-clean {
+    margin-bottom: 1.5rem;
+}
+
+/* Package Icon - Updated to circular container */
+.package-icon-clean {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    background: linear-gradient(135deg, rgba(0, 102, 255, 0.2), rgba(0, 217, 255, 0.2));
+    border: 2px solid rgba(0, 102, 255, 0.4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    font-size: 2.5rem;
+    color: #00D9FF;
+}
+
+.pricing-card-clean:hover .package-icon-clean {
+    transform: scale(1.1) rotate(10deg);
+    background: linear-gradient(135deg, rgba(0, 102, 255, 0.3), rgba(0, 217, 255, 0.3));
+    box-shadow: 0 0 30px rgba(0, 217, 255, 0.5);
+}
+
+/* Package Name */
+.package-name-clean {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin-bottom: 0.5rem;
+}
+
+/* Package Subtitle */
+.package-subtitle-clean {
+    font-size: 0.95rem;
+    color: #9CA3AF;
+    margin-bottom: 1.5rem;
+}
+
+/* Package Price - Updated to match custom installation card style */
+.package-price-clean {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid rgba(0, 102, 255, 0.2);
+    border-bottom: 1px solid rgba(0, 102, 255, 0.2);
+    margin-bottom: 1.5rem;
+}
+
+.price-amount-clean {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #00D9FF;
+    line-height: 1;
+}
+
+.price-period-clean {
+    font-size: 0.85rem;
+    color: #9CA3AF;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Package Features - Updated to match custom installation style */
+.package-features-clean {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem 0;
+    text-align: left;
+}
+
+    .package-features-clean li {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem 0;
+        color: #E5E7EB;
+        font-size: 0.9rem;
+    }
+
+        .package-features-clean li i {
+            color: #00E676;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+/* ============================================
+   CUSTOM INSTALLATIONS - KEEP EXISTING STYLES
+   (These are already perfect, just included for reference)
+   ============================================ */
+
+.custom-item-card {
+    background: linear-gradient(180deg, rgba(26, 34, 56, 0.8) 0%, rgba(10, 17, 40, 0.9) 100%);
+    border: 2px solid rgba(0, 102, 255, 0.2);
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+    .custom-item-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #0066FF, #00D9FF, #0066FF, transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .custom-item-card:hover {
+        transform: translateY(-8px);
+        border-color: rgba(0, 102, 255, 0.6);
+        box-shadow: 0 15px 40px rgba(0, 102, 255, 0.3);
+    }
+
+        .custom-item-card:hover::before {
+            opacity: 1;
+        }
+
+.item-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    background: linear-gradient(135deg, rgba(0, 102, 255, 0.2), rgba(0, 217, 255, 0.2));
+    border: 2px solid rgba(0, 102, 255, 0.4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+    .item-icon i {
+        font-size: 2.5rem;
+        color: #00D9FF;
+        transition: all 0.3s ease;
+    }
+
+.custom-item-card:hover .item-icon {
+    transform: scale(1.1) rotate(10deg);
+    background: linear-gradient(135deg, rgba(0, 102, 255, 0.3), rgba(0, 217, 255, 0.3));
+    box-shadow: 0 0 30px rgba(0, 217, 255, 0.5);
+}
+
+    .custom-item-card:hover .item-icon i {
+        transform: rotate(-10deg);
+    }
+
+.item-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin-bottom: 0.75rem;
+}
+
+.item-description {
+    font-size: 0.95rem;
+    color: #9CA3AF;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.item-price {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid rgba(0, 102, 255, 0.2);
+    border-bottom: 1px solid rgba(0, 102, 255, 0.2);
+    margin-bottom: 1.5rem;
+}
+
+.price-label {
+    font-size: 0.85rem;
+    color: #9CA3AF;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.price-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #00D9FF;
+    line-height: 1;
+}
+
+.price-unit {
+    font-size: 0.85rem;
+    color: #9CA3AF;
+}
+
+.item-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem 0;
+    text-align: left;
+}
+
+    .item-features li {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem 0;
+        color: #E5E7EB;
+        font-size: 0.9rem;
+    }
+
+        .item-features li i {
+            color: #00E676;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+
+@media (max-width: 968px) {
+    .service-card-clean,
+    .pricing-card-clean,
+    .custom-item-card {
+        padding: 1.75rem;
+    }
+
+    .service-icon-clean,
+    .package-icon-clean,
+    .item-icon {
+        width: 70px;
+        height: 70px;
+    }
+
+        .service-icon-clean i,
+        .package-icon-clean,
+        .item-icon i {
+            font-size: 2rem;
+        }
+
+    .service-title-clean,
+    .package-name-clean,
+    .item-name {
+        font-size: 1.15rem;
+    }
+
+    .price-amount-clean,
+    .price-value {
+        font-size: 1.75rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .service-card-clean,
+    .pricing-card-clean,
+    .custom-item-card {
+        padding: 1.5rem;
+    }
+
+    .service-icon-clean,
+    .package-icon-clean,
+    .item-icon {
+        width: 60px;
+        height: 60px;
+    }
+
+        .service-icon-clean i,
+        .package-icon-clean,
+        .item-icon i {
+            font-size: 1.75rem;
+        }
+
+    .popular-card-clean::after {
+        font-size: 0.65rem;
+        padding: 4px 35px;
+    }
+}
+/* ============================================
+   PERFECT ICON CENTERING FIX
+   For icons directly applied with package-icon-clean class
+   ============================================ */
+
+/* Package Icon - The <i> element itself is the circular container */
+.package-icon-clean {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    background: linear-gradient(135deg, rgba(0, 102, 255, 0.2), rgba(0, 217, 255, 0.2));
+    border: 2px solid rgba(0, 102, 255, 0.4);
+    border-radius: 50%;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.3s ease;
+    font-size: 2.5rem;
+    color: #00D9FF;
+    position: relative;
+}
+
+    /* Center the FontAwesome icon content (::before pseudo-element) */
+    .package-icon-clean::before {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+        vertical-align: middle;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+/* Remove any inherited text-align that might offset the icon */
+.package-header-clean {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Hover effect - rotate container but keep icon centered */
+.pricing-card-clean:hover .package-icon-clean {
+    transform: scale(1.1) rotate(10deg);
+    background: linear-gradient(135deg, rgba(0, 102, 255, 0.3), rgba(0, 217, 255, 0.3));
+    box-shadow: 0 0 30px rgba(0, 217, 255, 0.5);
+}
+
+    .pricing-card-clean:hover .package-icon-clean::before {
+        /* Counter-rotate to keep icon upright and centered */
+        transform: translate(-50%, -50%) rotate(-10deg);
+    }
+
+/* Responsive sizing */
+@media (max-width: 968px) {
+    .package-icon-clean {
+        width: 70px;
+        height: 70px;
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .package-icon-clean {
+        width: 60px;
+        height: 60px;
+        font-size: 1.75rem;
+    }
+}
+
+/* ============================================
+   APPLY SAME FIX TO SERVICES ICONS
+   (in case they need it too)
+   ============================================ */
+
+.service-icon-clean {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    background: linear-gradient(135deg, rgba(0, 102, 255, 0.2), rgba(0, 217, 255, 0.2));
+    border: 2px solid rgba(0, 102, 255, 0.4);
+    border-radius: 50%;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+    .service-icon-clean i {
+        font-size: 2.5rem;
+        color: #00D9FF;
+        transition: all 0.3s ease;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* If service icon is also directly on <i> element */
+    .service-icon-clean.fas,
+    .service-icon-clean.far,
+    .service-icon-clean.fab {
+        font-size: 2.5rem;
+        color: #00D9FF;
+    }
+
+        .service-icon-clean.fas::before,
+        .service-icon-clean.far::before,
+        .service-icon-clean.fab::before {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            vertical-align: middle;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+/* ============================================
+   CUSTOM INSTALLATION ICONS
+   (ensure consistency)
+   ============================================ */
+
+.item-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    background: linear-gradient(135deg, rgba(0, 102, 255, 0.2), rgba(0, 217, 255, 0.2));
+    border: 2px solid rgba(0, 102, 255, 0.4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+    .item-icon i {
+        font-size: 2.5rem;
+        color: #00D9FF;
+        transition: all 0.3s ease;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* ============================================
+   ENSURE ALL FONTAWESOME ICONS ARE CENTERED
+   ============================================ */
+
+    /* Remove any default margins/padding from FontAwesome */
+    .package-icon-clean,
+    .service-icon-clean i,
+    .item-icon i {
+        margin: 0;
+        padding: 0;
+    }
+
+        /* Force proper alignment */
+        .package-icon-clean::before,
+        .service-icon-clean::before,
+        .service-icon-clean i::before,
+        .item-icon i::before {
+            margin: 0 !important;
+            padding: 0 !important;
+            display: inline-flex;
+            vertical-align: middle;
+        }
