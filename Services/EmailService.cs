@@ -1,9 +1,9 @@
-using InnoteksoWeb.Models;
+using innoteksoWebNew.Models;
 using System.Net;
 using System.Net.Mail;
 using Microsoft.Extensions.Configuration;
 
-namespace InnoteksoWeb.Services
+namespace innoteksoWebNew.Services
 {
     public class EmailService : IEmailService
     {

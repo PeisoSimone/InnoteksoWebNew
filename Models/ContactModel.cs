@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace InnoteksoWeb.Models
+namespace innoteksoWebNew.Models
 {
     public class ContactModel
     {

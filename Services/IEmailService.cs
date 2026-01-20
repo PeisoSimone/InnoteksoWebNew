@@ -1,6 +1,6 @@
 using InnoteksoWeb.Models;
 
-namespace InnoteksoWeb.Services
+namespace InnoteksoWebNew.Services
 {
     public interface IEmailService
     {

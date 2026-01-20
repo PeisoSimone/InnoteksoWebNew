@@ -1,4 +1,4 @@
-namespace InnoteksoWeb.Models
+namespace innoteksoWebNew.Models
 {
     public class FeatureModel
     {
