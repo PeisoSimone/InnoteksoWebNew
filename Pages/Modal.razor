@@ -26,7 +26,7 @@
 
 @if (IsVisible)
 {
-    <div class="modal-backdrop fade show"></div>
+    <div class="modal-backdrop fade show" @onclick="HideAsync"></div>
 }
 
 @code {

@@ -1,82 +1,138 @@
 ﻿@page "/"
 @using innoteksoWebNew.Models
+@using InnoteksoWebNew.Services
+@inject IEmailService EmailService
 @inject IJSRuntime JSRuntime
 @inject NavigationManager Navigation
-@implements IAsyncDisposable
 
 <!-- Navigation -->
 <NavMenu />
 
 <!-- Contact Modal -->
-<Modal @ref="contactModal" title="Get in touch with us..." IsScrollable="true">
+<Modal @ref="contactModal" Title="Get Your Free Quote" IsScrollable="true">
     <BodyTemplate>
         @if (showSuccessMessage)
         {
             <div class="alert alert-success">
                 <i class="fas fa-check-circle me-2"></i>
-                Your message has been sent successfully! We'll get back to you soon.
+                <strong>Success!</strong> Your message has been sent. We'll get back to you within 24 hours at @contactModel.Email
             </div>
         }
         else if (showErrorMessage)
         {
             <div class="alert alert-danger">
                 <i class="fas fa-exclamation-circle me-2"></i>
-                @errorMessage
+                <strong>Error:</strong> @errorMessage
             </div>
         }
         else
         {
             <EditForm Model="contactModel" OnValidSubmit="HandleValidSubmit">
                 <DataAnnotationsValidator />
-                <ValidationSummary class="text-danger mb-3" />
 
-                <div class="mb-3">
-                    <label class="form-label">First Name *</label>
-                    <InputText class="form-control" @bind-Value="contactModel.FirstName" placeholder="John" />
-                    <ValidationMessage For="@(() => contactModel.FirstName)" />
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">First Name <span class="text-danger">*</span></label>
+                        <InputText class="form-control" @bind-Value="contactModel.FirstName" placeholder="John" />
+                        <ValidationMessage For="@(() => contactModel.FirstName)" class="validation-message" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Last Name <span class="text-danger">*</span></label>
+                        <InputText class="form-control" @bind-Value="contactModel.LastName" placeholder="Doe" />
+                        <ValidationMessage For="@(() => contactModel.LastName)" class="validation-message" />
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Last Name *</label>
-                    <InputText class="form-control" @bind-Value="contactModel.LastName" placeholder="Doe" />
-                    <ValidationMessage For="@(() => contactModel.LastName)" />
-                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Contact Number <span class="text-danger">*</span></label>
+                        <InputText class="form-control" @bind-Value="contactModel.ContactNumber" placeholder="+27 81 123 4567" />
+                        <ValidationMessage For="@(() => contactModel.ContactNumber)" class="validation-message" />
+                    </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Contact Number *</label>
-                    <InputText class="form-control" @bind-Value="contactModel.ContactNumber" placeholder="+27 81 123 4567" />
-                    <ValidationMessage For="@(() => contactModel.ContactNumber)" />
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Email *</label>
-                    <InputText type="email" class="form-control" @bind-Value="contactModel.Email" placeholder="john.doe@example.com" />
-                    <ValidationMessage For="@(() => contactModel.Email)" />
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Email Address <span class="text-danger">*</span></label>
+                        <InputText type="email" class="form-control" @bind-Value="contactModel.Email" placeholder="john.doe@example.com" />
+                        <ValidationMessage For="@(() => contactModel.Email)" class="validation-message" />
+                    </div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Service Interested In</label>
                     <InputSelect class="form-control" @bind-Value="contactModel.ServiceType">
-                        <option value="">Select a service...</option>
-                        <option value="Web Development">Web Development</option>
-                        <option value="Mobile Apps">Mobile Apps</option>
-                        <option value="Cloud & AI">Cloud & AI Solutions</option>
-                        <option value="Smart Home - Starter">Smart Home - Starter Package</option>
-                        <option value="Smart Home - Advanced">Smart Home - Advanced Package</option>
-                        <option value="Smart Home - Premium">Smart Home - Premium Package</option>
-                        <option value="Consulting">Consulting</option>
-                        <option value="Other">Other</option>
+                        <option value="">-- Select a service --</option>
+
+                        <optgroup label="🏠 Smart Home Solutions">
+                            <option value="Smart Home - Starter Package">Starter Package (R2,500 - R4,000)</option>
+                            <option value="Smart Home - Advanced Package">Advanced Package (R5,000 - R8,000)</option>
+                            <option value="Smart Home - Premium Package">Premium Package (R10,000+)</option>
+                            <option value="Smart Home - Smart Geyser">Smart Geyser Controller (from R800)</option>
+                            <option value="Smart Home - Smart Lighting">Smart Lighting (from R150/bulb)</option>
+                            <option value="Smart Home - Smart Plugs">Smart Power Plugs (from R200)</option>
+                            <option value="Smart Home - Smart Door Lock">Smart Door Lock (from R1,500)</option>
+                            <option value="Smart Home - Security Camera">Security Camera (from R800)</option>
+                            <option value="Smart Home - Motion Sensors">Motion Sensors (from R300)</option>
+                            <option value="Smart Home - Smart Doorbell">Smart Doorbell (from R1,000)</option>
+                            <option value="Smart Home - Smart Blinds">Smart Blinds/Curtains (from R1,500)</option>
+                            <option value="Smart Home - Voice Assistant">Voice Assistant Hub (from R500)</option>
+                            <option value="Smart Home - Smart Garage">Smart Garage Door (from R1,200)</option>
+                            <option value="Smart Home - Water Leak Detector">Water Leak Detector (from R400)</option>
+                            <option value="Smart Home - Custom Solution">Custom Smart Home Solution</option>
+                        </optgroup>
+
+                        <optgroup label="💻 Web Development">
+                            <option value="Web - Starter Website">Starter Website (R3,000 - R5,000)</option>
+                            <option value="Web - Professional Website">Professional Website (R6,000 - R12,000)</option>
+                            <option value="Web - Enterprise Platform">Enterprise Platform (R16,000+)</option>
+                            <option value="Web - E-commerce">E-commerce Website</option>
+                            <option value="Web - CMS">Content Management System</option>
+                            <option value="Web - Custom Application">Custom Web Application</option>
+                            <option value="Web - Landing Page">Landing Page Design</option>
+                            <option value="Web - Website Redesign">Website Redesign</option>
+                        </optgroup>
+
+                        <optgroup label="📱 Mobile Applications">
+                            <option value="Mobile - Basic App">Basic App (R4,000 - R8,000)</option>
+                            <option value="Mobile - Professional App">Professional App (R10,000 - R20,000)</option>
+                            <option value="Mobile - Enterprise App">Enterprise App (R25,000+)</option>
+                            <option value="Mobile - Cross-Platform">Cross-Platform Solution</option>
+                            <option value="Mobile - iOS Only">iOS App Development</option>
+                            <option value="Mobile - Android Only">Android App Development</option>
+                        </optgroup>
+
+                        <optgroup label="☁️ Cloud & AI Solutions">
+                            <option value="Cloud - Essentials">Cloud Essentials (R3,000 - R6,000)</option>
+                            <option value="Cloud - AI Integration">AI Integration (R8,000 - R15,000)</option>
+                            <option value="Cloud - Enterprise">Enterprise Cloud (R20,000+)</option>
+                            <option value="Cloud - Migration">Cloud Migration Services</option>
+                            <option value="Cloud - Hosting Setup">Cloud Hosting Setup</option>
+                            <option value="Cloud - Database">Database Solutions</option>
+                        </optgroup>
+
+                        <optgroup label="🛠️ Other Services">
+                            <option value="Support - Maintenance">Ongoing Support & Maintenance</option>
+                            <option value="Consultation">Technical Consultation</option>
+                            <option value="Training">Training & Workshops</option>
+                            <option value="Integration">System Integration</option>
+                            <option value="Business Automation">Business Process Automation</option>
+                            <option value="Other">Other / Not Sure</option>
+                        </optgroup>
                     </InputSelect>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Message *</label>
-                    <InputTextArea class="form-control" rows="4" @bind-Value="contactModel.Message"
-                                   placeholder="Tell us about your project..." />
-                    <ValidationMessage For="@(() => contactModel.Message)" />
+                    <label class="form-label">Tell Us About Your Project <span class="text-danger">*</span></label>
+                    <InputTextArea class="form-control" rows="5" @bind-Value="contactModel.Message"
+                                   placeholder="Describe what you're looking for, your timeline, budget, or any specific requirements..." />
+                    <ValidationMessage For="@(() => contactModel.Message)" class="validation-message" />
+                    <small class="text-muted">Minimum 10 characters</small>
                 </div>
 
-                <div class="d-flex gap-2">
+                <div class="d-flex gap-2 justify-content-end">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseModal" disabled="@isSubmitting">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </button>
                     <button type="submit" class="btn btn-primary flex-grow-1" disabled="@isSubmitting">
                         @if (isSubmitting)
                         {
@@ -85,18 +141,511 @@
                         }
                         else
                         {
-                            <span><i class="fab fa-whatsapp me-2"></i>Send via WhatsApp</span>
+                            <span><i class="fas fa-paper-plane me-2"></i>Send Quote Request</span>
                         }
                     </button>
-                    <button type="button" class="btn btn-secondary" @onclick="CloseModal">Cancel</button>
                 </div>
             </EditForm>
         }
     </BodyTemplate>
 </Modal>
 
+<!-- Smart Home Service Modal -->
+<Modal @ref="smartHomeModal" Title="Smart Home Solutions" Size="ModalSize.ExtraLarge" IsScrollable="true">
+    <BodyTemplate>
+        <div class="service-modal-content">
+            <div class="modal-intro">
+                <p class="lead">Transform your home with intelligent automation systems that save energy, increase security, and provide ultimate convenience.</p>
+            </div>
+
+            <div class="alert alert-info location-notice">
+                <i class="fas fa-map-marker-alt me-2"></i>
+                <div>
+                    <strong>Service Area:</strong> We are based in <strong>Krugersdorp and Pretoria</strong>. Installation is FREE in these areas!
+                    For locations outside these areas, a travel/transport fee will apply based on distance.
+                </div>
+            </div>
+
+            <h4 class="packages-header mb-4">
+                <i class="fas fa-box-open me-2"></i>Available Packages
+            </h4>
+
+            <div class="custom-suggestions-grid mb-4">
+                <!-- Starter Package -->
+                <div class="suggestion-card" @onclick='() => OpenContactModalWithService("Smart Home - Starter Package")'>
+                    <i class="fas fa-lightbulb suggestion-card-icon"></i>
+                    <h4>Starter Package</h4>
+                    <div class="package-price-modal">R2,500 - R4,000</div>
+                    <p>Perfect for beginners wanting to experience smart home technology</p>
+                    <div class="suggestion-card-examples">
+                        <strong>Includes:</strong>
+                        <ul>
+                            <li>2-4 Smart devices</li>
+                            <li>Voice control setup</li>
+                            <li>Basic automation</li>
+                            <li>Professional installation</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary w-100 mt-3">
+                        <i class="fas fa-file-invoice me-2"></i>Get Full Quote
+                    </button>
+                </div>
+
+                <!-- Advanced Package -->
+                <div class="suggestion-card" @onclick='() => OpenContactModalWithService("Smart Home - Advanced Package")'>
+                    <i class="fas fa-home suggestion-card-icon"></i>
+                    <h4>Advanced Package</h4>
+                    <div class="package-price-modal">R5,000 - R8,000</div>
+                    <p>Comprehensive solution for whole-home automation</p>
+                    <div class="suggestion-card-examples">
+                        <strong>Includes:</strong>
+                        <ul>
+                            <li>5-8 Smart devices</li>
+                            <li>Advanced scheduling</li>
+                            <li>Energy monitoring</li>
+                            <li>Security integration</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary w-100 mt-3">
+                        <i class="fas fa-file-invoice me-2"></i>Get Full Quote
+                    </button>
+                </div>
+
+                <!-- Premium Package -->
+                <div class="suggestion-card" @onclick='() => OpenContactModalWithService("Smart Home - Premium Package")'>
+                    <i class="fas fa-crown suggestion-card-icon"></i>
+                    <h4>Premium Package</h4>
+                    <div class="package-price-modal">R10,000+</div>
+                    <p>Ultimate smart home experience with all features</p>
+                    <div class="suggestion-card-examples">
+                        <strong>Includes:</strong>
+                        <ul>
+                            <li>10+ Smart devices</li>
+                            <li>Whole-home automation</li>
+                            <li>Premium security</li>
+                            <li>Custom integration</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary w-100 mt-3">
+                        <i class="fas fa-file-invoice me-2"></i>Get Full Quote
+                    </button>
+                </div>
+            </div>
+
+            <h5 class="individual-products-header mb-3">
+                <i class="fas fa-puzzle-piece me-2"></i>Individual Products
+            </h5>
+
+            <div class="custom-options-checkboxes">
+                <div class="custom-checkbox-item" @onclick='() => OpenContactModalWithService("Smart Home - Smart Geyser")'>
+                    <label>
+                        <i class="fas fa-fire"></i>
+                        <span>Smart Geyser Controller (from R800)</span>
+                    </label>
+                </div>
+                <div class="custom-checkbox-item" @onclick='() => OpenContactModalWithService("Smart Home - Smart Lighting")'>
+                    <label>
+                        <i class="fas fa-lightbulb"></i>
+                        <span>Smart Lighting (from R150/bulb)</span>
+                    </label>
+                </div>
+                <div class="custom-checkbox-item" @onclick='() => OpenContactModalWithService("Smart Home - Smart Plugs")'>
+                    <label>
+                        <i class="fas fa-plug"></i>
+                        <span>Smart Power Plugs (from R200)</span>
+                    </label>
+                </div>
+                <div class="custom-checkbox-item" @onclick='() => OpenContactModalWithService("Smart Home - Smart Door Lock")'>
+                    <label>
+                        <i class="fas fa-door-closed"></i>
+                        <span>Smart Door Lock (from R1,500)</span>
+                    </label>
+                </div>
+                <div class="custom-checkbox-item" @onclick='() => OpenContactModalWithService("Smart Home - Security Camera")'>
+                    <label>
+                        <i class="fas fa-video"></i>
+                        <span>Security Camera (from R800)</span>
+                    </label>
+                </div>
+                <div class="custom-checkbox-item" @onclick='() => OpenContactModalWithService("Smart Home - Motion Sensors")'>
+                    <label>
+                        <i class="fas fa-running"></i>
+                        <span>Motion Sensors (from R300)</span>
+                    </label>
+                </div>
+                <div class="custom-checkbox-item" @onclick='() => OpenContactModalWithService("Smart Home - Smart Doorbell")'>
+                    <label>
+                        <i class="fas fa-bell"></i>
+                        <span>Smart Doorbell (from R1,000)</span>
+                    </label>
+                </div>
+                <div class="custom-checkbox-item" @onclick='() => OpenContactModalWithService("Smart Home - Smart Blinds")'>
+                    <label>
+                        <i class="fas fa-window-maximize"></i>
+                        <span>Smart Blinds/Curtains (from R1,500)</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="modal-footer-actions mt-4">
+                <button class="btn btn-secondary" @onclick="CloseSmartHomeModal">
+                    <i class="fas fa-times me-2"></i>Close
+                </button>
+                <button class="btn btn-primary" @onclick='() => OpenContactModalWithService("Smart Home - Custom Solution")'>
+                    <i class="fas fa-rocket me-2"></i>Get Custom Quote
+                </button>
+            </div>
+        </div>
+    </BodyTemplate>
+</Modal>
+
+<!-- Web Development Service Modal -->
+<Modal @ref="webDevModal" Title="Web Development Services" Size="ModalSize.ExtraLarge" IsScrollable="true">
+    <BodyTemplate>
+        <div class="service-modal-content">
+            <div class="modal-intro">
+                <p class="lead">Professional websites and web applications designed to elevate your online presence and drive business growth.</p>
+            </div>
+
+            <h4 class="packages-header mb-4">
+                <i class="fas fa-box-open me-2"></i>Available Packages
+            </h4>
+
+            <div class="custom-suggestions-grid mb-4">
+                <!-- Starter Website -->
+                <div class="suggestion-card" @onclick='() => OpenContactModalWithService("Web - Starter Website")'>
+                    <i class="fas fa-laptop-code suggestion-card-icon"></i>
+                    <h4>Starter Website</h4>
+                    <div class="package-price-modal">R3,000 - R5,000</div>
+                    <p>Perfect for small businesses and personal brands</p>
+                    <div class="suggestion-card-examples">
+                        <strong>Includes:</strong>
+                        <ul>
+                            <li>Up to 5 pages</li>
+                            <li>Responsive design</li>
+                            <li>Contact form</li>
+                            <li>Basic SEO</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary w-100 mt-3">
+                        <i class="fas fa-file-invoice me-2"></i>Get Full Quote
+                    </button>
+                </div>
+
+                <!-- Professional Website -->
+                <div class="suggestion-card" @onclick='() => OpenContactModalWithService("Web - Professional Website")'>
+                    <i class="fas fa-globe suggestion-card-icon"></i>
+                    <h4>Professional Website</h4>
+                    <div class="package-price-modal">R6,000 - R12,000</div>
+                    <p>Ideal for growing companies needing advanced features</p>
+                    <div class="suggestion-card-examples">
+                        <strong>Includes:</strong>
+                        <ul>
+                            <li>Up to 15 pages</li>
+                            <li>Custom design</li>
+                            <li>CMS integration</li>
+                            <li>E-commerce ready</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary w-100 mt-3">
+                        <i class="fas fa-file-invoice me-2"></i>Get Full Quote
+                    </button>
+                </div>
+
+                <!-- Enterprise Platform -->
+                <div class="suggestion-card" @onclick='() => OpenContactModalWithService("Web - Enterprise Platform")'>
+                    <i class="fas fa-server suggestion-card-icon"></i>
+                    <h4>Enterprise Platform</h4>
+                    <div class="package-price-modal">R16,000+</div>
+                    <p>Custom web applications for complex business needs</p>
+                    <div class="suggestion-card-examples">
+                        <strong>Includes:</strong>
+                        <ul>
+                            <li>Unlimited pages</li>
+                            <li>Custom features</li>
+                            <li>API development</li>
+                            <li>24/7 support</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary w-100 mt-3">
+                        <i class="fas fa-file-invoice me-2"></i>Get Full Quote
+                    </button>
+                </div>
+            </div>
+
+            <h5 class="individual-products-header mb-3">
+                <i class="fas fa-puzzle-piece me-2"></i>Additional Services
+            </h5>
+
+            <div class="custom-options-checkboxes">
+                <div class="custom-checkbox-item" @onclick='() => OpenContactModalWithService("Web - E-commerce")'>
+                    <label>
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>E-commerce Website</span>
+                    </label>
+                </div>
+                <div class="custom-checkbox-item" @onclick='() => OpenContactModalWithService("Web - CMS")'>
+                    <label>
+                        <i class="fas fa-edit"></i>
+                        <span>Content Management System</span>
+                    </label>
+                </div>
+                <div class="custom-checkbox-item" @onclick='() => OpenContactModalWithService("Web - Custom Application")'>
+                    <label>
+                        <i class="fas fa-cogs"></i>
+                        <span>Custom Web Application</span>
+                    </label>
+                </div>
+                <div class="custom-checkbox-item" @onclick='() => OpenContactModalWithService("Web - Landing Page")'>
+                    <label>
+                        <i class="fas fa-file-alt"></i>
+                        <span>Landing Page Design</span>
+                    </label>
+                </div>
+                <div class="custom-checkbox-item" @onclick='() => OpenContactModalWithService("Web - Website Redesign")'>
+                    <label>
+                        <i class="fas fa-paint-brush"></i>
+                        <span>Website Redesign</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="modal-footer-actions mt-4">
+                <button class="btn btn-secondary" @onclick="CloseWebDevModal">
+                    <i class="fas fa-times me-2"></i>Close
+                </button>
+                <button class="btn btn-primary" @onclick='() => OpenContactModalWithService("Web - Custom Application")'>
+                    <i class="fas fa-rocket me-2"></i>Get Custom Quote
+                </button>
+            </div>
+        </div>
+    </BodyTemplate>
+</Modal>
+
+<!-- Mobile Apps Service Modal -->
+<Modal @ref="mobileAppsModal" Title="Mobile Application Development" Size="ModalSize.ExtraLarge" IsScrollable="true">
+    <BodyTemplate>
+        <div class="service-modal-content">
+            <div class="modal-intro">
+                <p class="lead">Native and cross-platform mobile applications for iOS and Android. Engage your customers with powerful mobile experiences.</p>
+            </div>
+
+            <h4 class="packages-header mb-4">
+                <i class="fas fa-box-open me-2"></i>Available Packages
+            </h4>
+
+            <div class="custom-suggestions-grid mb-4">
+                <!-- Basic App -->
+                <div class="suggestion-card" @onclick='() => OpenContactModalWithService("Mobile - Basic App")'>
+                    <i class="fas fa-mobile suggestion-card-icon"></i>
+                    <h4>Basic App</h4>
+                    <div class="package-price-modal">R4,000 - R8,000</div>
+                    <p>Simple mobile application for single platform</p>
+                    <div class="suggestion-card-examples">
+                        <strong>Includes:</strong>
+                        <ul>
+                            <li>iOS or Android</li>
+                            <li>Up to 10 screens</li>
+                            <li>User authentication</li>
+                            <li>Push notifications</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary w-100 mt-3">
+                        <i class="fas fa-file-invoice me-2"></i>Get Full Quote
+                    </button>
+                </div>
+
+                <!-- Professional App -->
+                <div class="suggestion-card" @onclick='() => OpenContactModalWithService("Mobile - Professional App")'>
+                    <i class="fas fa-tablet-alt suggestion-card-icon"></i>
+                    <h4>Professional App</h4>
+                    <div class="package-price-modal">R10,000 - R20,000</div>
+                    <p>Cross-platform solution for both iOS and Android</p>
+                    <div class="suggestion-card-examples">
+                        <strong>Includes:</strong>
+                        <ul>
+                            <li>iOS & Android</li>
+                            <li>Up to 25 screens</li>
+                            <li>Custom UI/UX</li>
+                            <li>Payment integration</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary w-100 mt-3">
+                        <i class="fas fa-file-invoice me-2"></i>Get Full Quote
+                    </button>
+                </div>
+
+                <!-- Enterprise App -->
+                <div class="suggestion-card" @onclick='() => OpenContactModalWithService("Mobile - Enterprise App")'>
+                    <i class="fas fa-mobile-alt suggestion-card-icon"></i>
+                    <h4>Enterprise App</h4>
+                    <div class="package-price-modal">R25,000+</div>
+                    <p>Full-featured platform with advanced capabilities</p>
+                    <div class="suggestion-card-examples">
+                        <strong>Includes:</strong>
+                        <ul>
+                            <li>Native iOS & Android</li>
+                            <li>Unlimited screens</li>
+                            <li>AI/ML integration</li>
+                            <li>Priority support</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary w-100 mt-3">
+                        <i class="fas fa-file-invoice me-2"></i>Get Full Quote
+                    </button>
+                </div>
+            </div>
+
+            <h5 class="individual-products-header mb-3">
+                <i class="fas fa-puzzle-piece me-2"></i>Platform Options
+            </h5>
+
+            <div class="custom-options-checkboxes">
+                <div class="custom-checkbox-item" @onclick='() => OpenContactModalWithService("Mobile - Cross-Platform")'>
+                    <label>
+                        <i class="fas fa-code"></i>
+                        <span>Cross-Platform Solution</span>
+                    </label>
+                </div>
+                <div class="custom-checkbox-item" @onclick='() => OpenContactModalWithService("Mobile - iOS Only")'>
+                    <label>
+                        <i class="fab fa-apple"></i>
+                        <span>iOS App Development</span>
+                    </label>
+                </div>
+                <div class="custom-checkbox-item" @onclick='() => OpenContactModalWithService("Mobile - Android Only")'>
+                    <label>
+                        <i class="fab fa-android"></i>
+                        <span>Android App Development</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="modal-footer-actions mt-4">
+                <button class="btn btn-secondary" @onclick="CloseMobileAppsModal">
+                    <i class="fas fa-times me-2"></i>Close
+                </button>
+                <button class="btn btn-primary" @onclick='() => OpenContactModalWithService("Mobile - Cross-Platform")'>
+                    <i class="fas fa-rocket me-2"></i>Get Custom Quote
+                </button>
+            </div>
+        </div>
+    </BodyTemplate>
+</Modal>
+
+<!-- Cloud & AI Service Modal -->
+<Modal @ref="cloudAiModal" Title="Cloud & AI Solutions" Size="ModalSize.ExtraLarge" IsScrollable="true">
+    <BodyTemplate>
+        <div class="service-modal-content">
+            <div class="modal-intro">
+                <p class="lead">Cloud computing and artificial intelligence integration to modernize your business operations and gain competitive advantage.</p>
+            </div>
+
+            <h4 class="packages-header mb-4">
+                <i class="fas fa-box-open me-2"></i>Available Packages
+            </h4>
+
+            <div class="custom-suggestions-grid mb-4">
+                <!-- Cloud Essentials -->
+                <div class="suggestion-card" @onclick='() => OpenContactModalWithService("Cloud - Essentials")'>
+                    <i class="fas fa-cloud suggestion-card-icon"></i>
+                    <h4>Cloud Essentials</h4>
+                    <div class="package-price-modal">R3,000 - R6,000</div>
+                    <p>Basic cloud setup and migration services</p>
+                    <div class="suggestion-card-examples">
+                        <strong>Includes:</strong>
+                        <ul>
+                            <li>Cloud hosting setup</li>
+                            <li>Basic migration</li>
+                            <li>Storage solutions</li>
+                            <li>Security setup</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary w-100 mt-3">
+                        <i class="fas fa-file-invoice me-2"></i>Get Full Quote
+                    </button>
+                </div>
+
+                <!-- AI Integration -->
+                <div class="suggestion-card" @onclick='() => OpenContactModalWithService("Cloud - AI Integration")'>
+                    <i class="fas fa-robot suggestion-card-icon"></i>
+                    <h4>AI Integration</h4>
+                    <div class="package-price-modal">R8,000 - R15,000</div>
+                    <p>Integrate AI capabilities into your applications</p>
+                    <div class="suggestion-card-examples">
+                        <strong>Includes:</strong>
+                        <ul>
+                            <li>AI model integration</li>
+                            <li>Machine learning</li>
+                            <li>Data analytics</li>
+                            <li>Custom training</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary w-100 mt-3">
+                        <i class="fas fa-file-invoice me-2"></i>Get Full Quote
+                    </button>
+                </div>
+
+                <!-- Enterprise Cloud -->
+                <div class="suggestion-card" @onclick='() => OpenContactModalWithService("Cloud - Enterprise")'>
+                    <i class="fas fa-server suggestion-card-icon"></i>
+                    <h4>Enterprise Cloud</h4>
+                    <div class="package-price-modal">R20,000+</div>
+                    <p>Comprehensive cloud infrastructure and AI solutions</p>
+                    <div class="suggestion-card-examples">
+                        <strong>Includes:</strong>
+                        <ul>
+                            <li>Full cloud architecture</li>
+                            <li>Advanced AI features</li>
+                            <li>Scalable infrastructure</li>
+                            <li>24/7 monitoring</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary w-100 mt-3">
+                        <i class="fas fa-file-invoice me-2"></i>Get Full Quote
+                    </button>
+                </div>
+            </div>
+
+            <h5 class="individual-products-header mb-3">
+                <i class="fas fa-puzzle-piece me-2"></i>Additional Services
+            </h5>
+
+            <div class="custom-options-checkboxes">
+                <div class="custom-checkbox-item" @onclick='() => OpenContactModalWithService("Cloud - Migration")'>
+                    <label>
+                        <i class="fas fa-exchange-alt"></i>
+                        <span>Cloud Migration Services</span>
+                    </label>
+                </div>
+                <div class="custom-checkbox-item" @onclick='() => OpenContactModalWithService("Cloud - Hosting Setup")'>
+                    <label>
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span>Cloud Hosting Setup</span>
+                    </label>
+                </div>
+                <div class="custom-checkbox-item" @onclick='() => OpenContactModalWithService("Cloud - Database")'>
+                    <label>
+                        <i class="fas fa-database"></i>
+                        <span>Database Solutions</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="modal-footer-actions mt-4">
+                <button class="btn btn-secondary" @onclick="CloseCloudAiModal">
+                    <i class="fas fa-times me-2"></i>Close
+                </button>
+                <button class="btn btn-primary" @onclick='() => OpenContactModalWithService("Cloud - Enterprise")'>
+                    <i class="fas fa-rocket me-2"></i>Get Custom Quote
+                </button>
+            </div>
+        </div>
+    </BodyTemplate>
+</Modal>
+
 <div class="innotekso-site">
-    <!-- Hero Section - Clean & Readable -->
+    <!-- Hero Section -->
     <section id="home" class="hero-section-clean">
         <div class="container hero-content-clean">
             <div class="hero-text-clean">
@@ -113,17 +662,17 @@
 
                 <div class="hero-description-clean fade-in-delay">
                     <h2 class="hero-headline">
-                        Technology solutions that bring your vision to life
+                        Transforming Homes & Businesses with Smart Technology
                     </h2>
                     <p class="hero-subtext">
-                        From smart home automation to custom software solutions, we deliver innovative
-                        technology that works for you. Professional installation, transparent pricing,
-                        and expert support across South Africa.
+                        From intelligent home automation to cutting-edge software solutions,
+                        we bring innovation to South Africa's doorstep. Experience the future of living
+                        and working with our comprehensive technology services.
                     </p>
                 </div>
 
                 <div class="hero-actions-clean fade-in-delay-2">
-                    <button @onclick="ContactUs" class="btn-hero-primary" aria-label="Get started with Innotekso">
+                    <button @onclick="OpenContactModal" class="btn-hero-primary" aria-label="Get started with Innotekso">
                         <i class="fas fa-rocket me-2"></i>
                         Get Free Quote
                     </button>
@@ -166,7 +715,7 @@
             </div>
 
             <div class="services-grid-clean">
-                @foreach (var service in Services)
+                @foreach (var service in ServicesList)
                 {
                     <div class="service-card-clean animate-on-scroll">
                         <div class="service-icon-clean">
@@ -174,7 +723,7 @@
                         </div>
                         <h3 class="service-title-clean">@service.Title</h3>
                         <p class="service-description-clean">@service.Description</p>
-                        <button class="btn-service-learn" @onclick="() => NavigateToService(service.Id)">
+                        <button class="btn-service-learn" @onclick="() => OpenServiceModal(service.Id)">
                             Learn More <i class="fas fa-arrow-right ms-2"></i>
                         </button>
                     </div>
@@ -182,699 +731,86 @@
             </div>
         </div>
     </section>
-    <!-- ============================================
-         WEB DEVELOPMENT PACKAGES SECTION
-         ============================================ -->
 
-    <section class="packages-section-clean" id="web-development">
+    <!-- Why Choose Us Section -->
+    <section class="why-choose-section-enhanced">
         <div class="container">
             <div class="section-header-clean animate-on-scroll">
-                <span class="section-badge-clean">
-                    <i class="fas fa-code"></i>
-                    Professional Web Development
-                </span>
-                <h2 class="section-title-clean">Web Development Packages</h2>
-                <p class="section-description-clean">
-                    Custom-built websites and web applications designed to elevate your online presence
-                    and drive business growth. From simple landing pages to complex web platforms.
+                <h2 class="section-title-clean">Why Choose Innotekso?</h2>
+                <p class="section-subtitle-clean">
+                    Qualified, Certified Professionals Delivering Excellence
                 </p>
             </div>
 
-            <div class="pricing-grid-clean">
-                <!-- Starter Package -->
-                <div class="pricing-card-clean animate-on-scroll">
-                    <div class="package-header-clean">
-                        <i class="fas fa-laptop-code package-icon-clean"></i>
-                        <h3 class="package-name-clean">Starter Website</h3>
-                        <p class="package-subtitle-clean">Perfect for Small Businesses</p>
-                    </div>
-                    <div class="package-price-clean">
-                        <span class="price-amount-clean">R3,000 - R5,000</span>
-                        <span class="price-period-clean">one-time</span>
-                    </div>
-                    <ul class="package-features-clean">
-                        <li><i class="fas fa-check"></i> Up to 5 pages</li>
-                        <li><i class="fas fa-check"></i> Responsive design (mobile-friendly)</li>
-                        <li><i class="fas fa-check"></i> Contact form integration</li>
-                        <li><i class="fas fa-check"></i> Basic SEO optimization</li>
-                        <li><i class="fas fa-check"></i> Social media integration</li>
-                        <li><i class="fas fa-check"></i> Google Maps integration</li>
-                        <li><i class="fas fa-check"></i> SSL certificate setup</li>
-                        <li><i class="fas fa-check"></i> 1 month free maintenance</li>
-                        <li><i class="fas fa-check"></i> Domain & hosting guidance</li>
-                        <li><i class="fas fa-check"></i> Training session included</li>
-                    </ul>
-                </div>
-
-                <!-- Professional Package (Most Popular) -->
-                <div class="pricing-card-clean popular-card-clean animate-on-scroll">
-                    <div class="package-header-clean">
-                        <i class="fas fa-globe package-icon-clean"></i>
-                        <h3 class="package-name-clean">Professional Website</h3>
-                        <p class="package-subtitle-clean">Ideal for Growing Companies</p>
-                    </div>
-                    <div class="package-price-clean">
-                        <span class="price-amount-clean">R6,000 - R12,000</span>
-                        <span class="price-period-clean">one-time</span>
-                    </div>
-                    <ul class="package-features-clean">
-                        <li><i class="fas fa-check"></i> Up to 15 pages</li>
-                        <li><i class="fas fa-check"></i> Custom design & branding</li>
-                        <li><i class="fas fa-check"></i> Advanced animations & effects</li>
-                        <li><i class="fas fa-check"></i> Content Management System (CMS)</li>
-                        <li><i class="fas fa-check"></i> Blog functionality</li>
-                        <li><i class="fas fa-check"></i> Email newsletter integration</li>
-                        <li><i class="fas fa-check"></i> Advanced SEO optimization</li>
-                        <li><i class="fas fa-check"></i> Analytics dashboard setup</li>
-                        <li><i class="fas fa-check"></i> E-commerce ready (up to 50 products)</li>
-                        <li><i class="fas fa-check"></i> Payment gateway integration</li>
-                        <li><i class="fas fa-check"></i> Live chat integration</li>
-                        <li><i class="fas fa-check"></i> 3 months free maintenance</li>
-                        <li><i class="fas fa-check"></i> Priority support</li>
-                    </ul>
-                </div>
-
-                <!-- Enterprise Package -->
-                <div class="pricing-card-clean animate-on-scroll">
-                    <div class="package-header-clean">
-                        <i class="fas fa-server package-icon-clean"></i>
-                        <h3 class="package-name-clean">Enterprise Platform</h3>
-                        <p class="package-subtitle-clean">Custom Web Applications</p>
-                    </div>
-                    <div class="package-price-clean">
-                        <span class="price-amount-clean">R16,000+</span>
-                        <span class="price-period-clean">custom quote</span>
-                    </div>
-                    <ul class="package-features-clean">
-                        <li><i class="fas fa-check"></i> Unlimited pages</li>
-                        <li><i class="fas fa-check"></i> Fully custom web application</li>
-                        <li><i class="fas fa-check"></i> Advanced user management</li>
-                        <li><i class="fas fa-check"></i> Database architecture & design</li>
-                        <li><i class="fas fa-check"></i> API development & integration</li>
-                        <li><i class="fas fa-check"></i> Third-party integrations</li>
-                        <li><i class="fas fa-check"></i> Multi-language support</li>
-                        <li><i class="fas fa-check"></i> Advanced security features</li>
-                        <li><i class="fas fa-check"></i> Load balancing & optimization</li>
-                        <li><i class="fas fa-check"></i> Custom reporting & analytics</li>
-                        <li><i class="fas fa-check"></i> Progressive Web App (PWA)</li>
-                        <li><i class="fas fa-check"></i> 6 months free maintenance</li>
-                        <li><i class="fas fa-check"></i> Dedicated project manager</li>
-                        <li><i class="fas fa-check"></i> 24/7 priority support</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================
-         MOBILE APPLICATIONS PACKAGES SECTION
-         ============================================ -->
-
-    <section class="packages-section-clean" id="mobile-apps">
-        <div class="container">
-            <div class="section-header-clean animate-on-scroll">
-                <span class="section-badge-clean">
-                    <i class="fas fa-mobile-alt"></i>
-                    Mobile App Development
-                </span>
-                <h2 class="section-title-clean">Mobile Application Packages</h2>
-                <p class="section-description-clean">
-                    Native and cross-platform mobile applications for iOS and Android.
-                    Engage your customers with powerful mobile experiences.
-                </p>
-            </div>
-
-            <div class="pricing-grid-clean">
-                <!-- Basic Package -->
-                <div class="pricing-card-clean animate-on-scroll">
-                    <div class="package-header-clean">
-                        <i class="fas fa-mobile package-icon-clean"></i>
-                        <h3 class="package-name-clean">Basic App</h3>
-                        <p class="package-subtitle-clean">Simple Mobile Application</p>
-                    </div>
-                    <div class="package-price-clean">
-                        <span class="price-amount-clean">R4,000 - R8,000</span>
-                        <span class="price-period-clean">per platform</span>
-                    </div>
-                    <ul class="package-features-clean">
-                        <li><i class="fas fa-check"></i> iOS or Android (single platform)</li>
-                        <li><i class="fas fa-check"></i> Up to 10 screens</li>
-                        <li><i class="fas fa-check"></i> User authentication (login/signup)</li>
-                        <li><i class="fas fa-check"></i> Basic user profile</li>
-                        <li><i class="fas fa-check"></i> Push notifications</li>
-                        <li><i class="fas fa-check"></i> In-app messaging</li>
-                        <li><i class="fas fa-check"></i> Basic API integration</li>
-                        <li><i class="fas fa-check"></i> Offline functionality</li>
-                        <li><i class="fas fa-check"></i> App store submission</li>
-                        <li><i class="fas fa-check"></i> 2 months support</li>
-                    </ul>
-                </div>
-
-                <!-- Professional Package (Most Popular) -->
-                <div class="pricing-card-clean popular-card-clean animate-on-scroll">
-                    <div class="package-header-clean">
-                        <i class="fas fa-tablet-alt package-icon-clean"></i>
-                        <h3 class="package-name-clean">Professional App</h3>
-                        <p class="package-subtitle-clean">Cross-Platform Solution</p>
-                    </div>
-                    <div class="package-price-clean">
-                        <span class="price-amount-clean">R10,000 - R20,000</span>
-                        <span class="price-period-clean">both platforms</span>
-                    </div>
-                    <ul class="package-features-clean">
-                        <li><i class="fas fa-check"></i> iOS & Android (both platforms)</li>
-                        <li><i class="fas fa-check"></i> Up to 25 screens</li>
-                        <li><i class="fas fa-check"></i> Custom UI/UX design</li>
-                        <li><i class="fas fa-check"></i> Advanced user profiles</li>
-                        <li><i class="fas fa-check"></i> Social media integration</li>
-                        <li><i class="fas fa-check"></i> Payment gateway integration</li>
-                        <li><i class="fas fa-check"></i> Geolocation & maps</li>
-                        <li><i class="fas fa-check"></i> Photo/video capture & upload</li>
-                        <li><i class="fas fa-check"></i> In-app purchases</li>
-                        <li><i class="fas fa-check"></i> Analytics integration</li>
-                        <li><i class="fas fa-check"></i> Backend dashboard</li>
-                        <li><i class="fas fa-check"></i> Advanced API integrations</li>
-                        <li><i class="fas fa-check"></i> App store optimization</li>
-                        <li><i class="fas fa-check"></i> 4 months support</li>
-                    </ul>
-                </div>
-
-                <!-- Enterprise Package -->
-                <div class="pricing-card-clean animate-on-scroll">
-                    <div class="package-header-clean">
-                        <i class="fas fa-mobile-alt package-icon-clean"></i>
-                        <h3 class="package-name-clean">Enterprise App</h3>
-                        <p class="package-subtitle-clean">Full-Featured Platform</p>
-                    </div>
-                    <div class="package-price-clean">
-                        <span class="price-amount-clean">R25,000+</span>
-                        <span class="price-period-clean">custom quote</span>
-                    </div>
-                    <ul class="package-features-clean">
-                        <li><i class="fas fa-check"></i> iOS & Android native apps</li>
-                        <li><i class="fas fa-check"></i> Unlimited screens</li>
-                        <li><i class="fas fa-check"></i> Fully custom features</li>
-                        <li><i class="fas fa-check"></i> Advanced security (biometrics)</li>
-                        <li><i class="fas fa-check"></i> Real-time data synchronization</li>
-                        <li><i class="fas fa-check"></i> Video streaming capabilities</li>
-                        <li><i class="fas fa-check"></i> AI/ML integration</li>
-                        <li><i class="fas fa-check"></i> Augmented Reality (AR)</li>
-                        <li><i class="fas fa-check"></i> Multi-language support</li>
-                        <li><i class="fas fa-check"></i> Advanced analytics & reporting</li>
-                        <li><i class="fas fa-check"></i> Admin & customer portals</li>
-                        <li><i class="fas fa-check"></i> Third-party integrations</li>
-                        <li><i class="fas fa-check"></i> Scalable cloud backend</li>
-                        <li><i class="fas fa-check"></i> 6 months priority support</li>
-                        <li><i class="fas fa-check"></i> Dedicated development team</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================
-         CLOUD & AI SOLUTIONS PACKAGES SECTION
-         ============================================ -->
-
-    <section class="packages-section-clean" id="cloud-ai">
-        <div class="container">
-            <div class="section-header-clean animate-on-scroll">
-                <span class="section-badge-clean">
-                    <i class="fas fa-cloud"></i>
-                    Cloud & AI Solutions
-                </span>
-                <h2 class="section-title-clean">Cloud & AI Packages</h2>
-                <p class="section-description-clean">
-                    Harness the power of cloud computing and artificial intelligence to transform
-                    your business operations and unlock new possibilities.
-                </p>
-            </div>
-
-            <div class="pricing-grid-clean">
-                <!-- Cloud Essentials -->
-                <div class="pricing-card-clean animate-on-scroll">
-                    <div class="package-header-clean">
-                        <i class="fas fa-cloud-upload-alt package-icon-clean"></i>
-                        <h3 class="package-name-clean">Cloud Essentials</h3>
-                        <p class="package-subtitle-clean">Cloud Migration & Setup</p>
-                    </div>
-                    <div class="package-price-clean">
-                        <span class="price-amount-clean">R3,000 - R6,000</span>
-                        <span class="price-period-clean">one-time + monthly hosting</span>
-                    </div>
-                    <ul class="package-features-clean">
-                        <li><i class="fas fa-check"></i> Cloud platform setup (Azure/AWS)</li>
-                        <li><i class="fas fa-check"></i> Data migration to cloud</li>
-                        <li><i class="fas fa-check"></i> Cloud storage configuration</li>
-                        <li><i class="fas fa-check"></i> Automated backups</li>
-                        <li><i class="fas fa-check"></i> Basic security setup</li>
-                        <li><i class="fas fa-check"></i> User access management</li>
-                        <li><i class="fas fa-check"></i> Email hosting (Office 365)</li>
-                        <li><i class="fas fa-check"></i> File sharing & collaboration</li>
-                        <li><i class="fas fa-check"></i> Monitoring & alerts</li>
-                        <li><i class="fas fa-check"></i> 3 months support</li>
-                    </ul>
-                </div>
-
-                <!-- AI Integration (Most Popular) -->
-                <div class="pricing-card-clean popular-card-clean animate-on-scroll">
-                    <div class="package-header-clean">
-                        <i class="fas fa-brain package-icon-clean"></i>
-                        <h3 class="package-name-clean">AI Integration</h3>
-                        <p class="package-subtitle-clean">Intelligent Automation</p>
-                    </div>
-                    <div class="package-price-clean">
-                        <span class="price-amount-clean">R8,000 - R15,000</span>
-                        <span class="price-period-clean">project-based</span>
-                    </div>
-                    <ul class="package-features-clean">
-                        <li><i class="fas fa-check"></i> AI chatbot implementation</li>
-                        <li><i class="fas fa-check"></i> Natural language processing</li>
-                        <li><i class="fas fa-check"></i> Document analysis & extraction</li>
-                        <li><i class="fas fa-check"></i> Image recognition & tagging</li>
-                        <li><i class="fas fa-check"></i> Predictive analytics</li>
-                        <li><i class="fas fa-check"></i> Machine learning models</li>
-                        <li><i class="fas fa-check"></i> Data visualization dashboards</li>
-                        <li><i class="fas fa-check"></i> Workflow automation</li>
-                        <li><i class="fas fa-check"></i> API integrations</li>
-                        <li><i class="fas fa-check"></i> Custom AI training</li>
-                        <li><i class="fas fa-check"></i> Performance monitoring</li>
-                        <li><i class="fas fa-check"></i> Cloud infrastructure</li>
-                        <li><i class="fas fa-check"></i> 6 months support & optimization</li>
-                    </ul>
-                </div>
-
-                <!-- Enterprise Cloud -->
-                <div class="pricing-card-clean animate-on-scroll">
-                    <div class="package-header-clean">
-                        <i class="fas fa-network-wired package-icon-clean"></i>
-                        <h3 class="package-name-clean">Enterprise Cloud</h3>
-                        <p class="package-subtitle-clean">Complete Digital Transformation</p>
-                    </div>
-                    <div class="package-price-clean">
-                        <span class="price-amount-clean">R20,000+</span>
-                        <span class="price-period-clean">custom solution</span>
-                    </div>
-                    <ul class="package-features-clean">
-                        <li><i class="fas fa-check"></i> Full cloud architecture design</li>
-                        <li><i class="fas fa-check"></i> Multi-region deployment</li>
-                        <li><i class="fas fa-check"></i> Advanced AI/ML pipelines</li>
-                        <li><i class="fas fa-check"></i> Big data processing</li>
-                        <li><i class="fas fa-check"></i> IoT integration & management</li>
-                        <li><i class="fas fa-check"></i> Blockchain implementation</li>
-                        <li><i class="fas fa-check"></i> Advanced security & compliance</li>
-                        <li><i class="fas fa-check"></i> Disaster recovery planning</li>
-                        <li><i class="fas fa-check"></i> DevOps & CI/CD pipelines</li>
-                        <li><i class="fas fa-check"></i> Container orchestration (Kubernetes)</li>
-                        <li><i class="fas fa-check"></i> Microservices architecture</li>
-                        <li><i class="fas fa-check"></i> Custom AI model development</li>
-                        <li><i class="fas fa-check"></i> 24/7 monitoring & support</li>
-                        <li><i class="fas fa-check"></i> Dedicated cloud architect</li>
-                        <li><i class="fas fa-check"></i> Ongoing optimization</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================
-         SMART HOME PACKAGES SECTION
-         ============================================ -->
-
-    <section class="packages-section-clean" id="smart-home">
-        <div class="container">
-            <div class="section-header-clean animate-on-scroll">
-                <span class="section-badge-clean">
-                    <i class="fas fa-home"></i>
-                    Professional Smart Home Solutions
-                </span>
-                <h2 class="section-title-clean">Smart Home Packages</h2>
-                <p class="section-description-clean">
-                    Transform your home into an intelligent living space with our comprehensive
-                    IoT solutions. Professional installation and ongoing support included.
-                </p>
-            </div>
-
-            <div class="pricing-grid-clean">
-                <!-- Starter Package -->
-                <div class="pricing-card-clean animate-on-scroll">
-                    <div class="package-header-clean">
-                        <i class="fas fa-lightbulb package-icon-clean"></i>
-                        <h3 class="package-name-clean">Starter Package</h3>
-                        <p class="package-subtitle-clean">Essential Smart Home</p>
-                    </div>
-                    <div class="package-price-clean">
-                        <span class="price-amount-clean">R2,500 - R4,000</span>
-                        <span class="price-period-clean">one-time installation</span>
-                    </div>
-                    <ul class="package-features-clean">
-                        <li><i class="fas fa-check"></i> Smart lighting (5 bulbs)</li>
-                        <li><i class="fas fa-check"></i> Smart power plugs (3 units)</li>
-                        <li><i class="fas fa-check"></i> Voice assistant setup (1 hub)</li>
-                        <li><i class="fas fa-check"></i> Mobile app configuration</li>
-                        <li><i class="fas fa-check"></i> Basic automation scenes</li>
-                        <li><i class="fas fa-check"></i> Professional installation</li>
-                        <li><i class="fas fa-check"></i> User training session</li>
-                        <li><i class="fas fa-check"></i> 3 months support</li>
-                    </ul>
-                </div>
-
-                <!-- Advanced Package (Most Popular) -->
-                <div class="pricing-card-clean popular-card-clean animate-on-scroll">
-                    <div class="package-header-clean">
-                        <i class="fas fa-home package-icon-clean"></i>
-                        <h3 class="package-name-clean">Advanced Package</h3>
-                        <p class="package-subtitle-clean">Complete Home Automation</p>
-                    </div>
-                    <div class="package-price-clean">
-                        <span class="price-amount-clean">R5,000 - R8,000</span>
-                        <span class="price-period-clean">one-time installation</span>
-                    </div>
-                    <ul class="package-features-clean">
-                        <li><i class="fas fa-check"></i> Smart lighting (15 bulbs)</li>
-                        <li><i class="fas fa-check"></i> Smart door locks (2 units)</li>
-                        <li><i class="fas fa-check"></i> Security cameras (4 units)</li>
-                        <li><i class="fas fa-check"></i> Motion sensors (6 units)</li>
-                        <li><i class="fas fa-check"></i> Smart blinds/curtains (2 rooms)</li>
-                        <li><i class="fas fa-check"></i> Voice assistant setup (3 hubs)</li>
-                        <li><i class="fas fa-check"></i> Advanced automation & scenes</li>
-                        <li><i class="fas fa-check"></i> Energy monitoring</li>
-                        <li><i class="fas fa-check"></i> Professional installation</li>
-                        <li><i class="fas fa-check"></i> Comprehensive training</li>
-                        <li><i class="fas fa-check"></i> 6 months priority support</li>
-                    </ul>
-  
-                </div>
-
-                <!-- Premium Package -->
-                <div class="pricing-card-clean animate-on-scroll">
-                    <div class="package-header-clean">
-                        <i class="fas fa-crown package-icon-clean"></i>
-                        <h3 class="package-name-clean">Premium Package</h3>
-                        <p class="package-subtitle-clean">Luxury Smart Living</p>
-                    </div>
-                    <div class="package-price-clean">
-                        <span class="price-amount-clean">R10,000+</span>
-                        <span class="price-period-clean">custom quote</span>
-                    </div>
-                    <ul class="package-features-clean">
-                        <li><i class="fas fa-check"></i> Whole-home lighting automation</li>
-                        <li><i class="fas fa-check"></i> Multi-zone climate control</li>
-                        <li><i class="fas fa-check"></i> Advanced security system</li>
-                        <li><i class="fas fa-check"></i> Smart appliance integration</li>
-                        <li><i class="fas fa-check"></i> Home theater automation</li>
-                        <li><i class="fas fa-check"></i> Irrigation & garden automation</li>
-                        <li><i class="fas fa-check"></i> Smart garage door</li>
-                        <li><i class="fas fa-check"></i> Water leak detection</li>
-                        <li><i class="fas fa-check"></i> AI-powered scene learning</li>
-                        <li><i class="fas fa-check"></i> Custom dashboard design</li>
-                        <li><i class="fas fa-check"></i> Professional installation & setup</li>
-                        <li><i class="fas fa-check"></i> Extended training sessions</li>
-                        <li><i class="fas fa-check"></i> 12 months premium support</li>
-                        <li><i class="fas fa-check"></i> Dedicated support manager</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================
-     CUSTOM SMART HOME INSTALLATIONS SECTION
-     Individual items & custom setups
-     ============================================ -->
-
-    <section class="packages-section-clean" id="custom-installations">
-        <div class="container">
-            <div class="section-header-clean animate-on-scroll">
-                <span class="section-badge-clean">
-                    <i class="fas fa-tools"></i>
-                    Custom Installations
-                </span>
-                <h2 class="section-title-clean">Individual Smart Device Installations</h2>
-                <p class="section-description-clean">
-                    Need just one or two smart devices? We install individual items or create custom
-                    solutions tailored to your specific needs. Professional installation included.
-                </p>
-            </div>
-
-            <!-- Individual Items Grid -->
-            <div class="custom-items-grid">
-
-                <!-- Smart Geyser -->
-                <div class="custom-item-card animate-on-scroll">
-                    <div class="item-icon">
-                        <i class="fas fa-burn"></i>
-                    </div>
-                    <h3 class="item-name">Smart Geyser Controller</h3>
-                    <p class="item-description">Control your geyser remotely, schedule heating times, monitor energy usage</p>
-                    <div class="item-price">
-                        <span class="price-label">From</span>
-                        <span class="price-value">R800</span>
-                    </div>
-                    <ul class="item-features">
-                        <li><i class="fas fa-check"></i> Device & installation</li>
-                        <li><i class="fas fa-check"></i> Mobile app setup</li>
-                        <li><i class="fas fa-check"></i> Scheduling automation</li>
-                        <li><i class="fas fa-check"></i> Energy monitoring</li>
-                    </ul>
-                </div>
-
-                <!-- Smart Lighting -->
-                <div class="custom-item-card animate-on-scroll">
-                    <div class="item-icon">
-                        <i class="fas fa-lightbulb"></i>
-                    </div>
-                    <h3 class="item-name">Smart Lighting</h3>
-                    <p class="item-description">Individual smart bulbs or complete room lighting solutions</p>
-                    <div class="item-price">
-                        <span class="price-label">From</span>
-                        <span class="price-value">R150</span>
-                        <span class="price-unit">per bulb</span>
-                    </div>
-                    <ul class="item-features">
-                        <li><i class="fas fa-check"></i> Smart bulb included</li>
-                        <li><i class="fas fa-check"></i> Color & brightness control</li>
-                        <li><i class="fas fa-check"></i> Voice control setup</li>
-                        <li><i class="fas fa-check"></i> Scene creation</li>
-                    </ul>
-                </div>
-
-                <!-- Smart Plugs -->
-                <div class="custom-item-card animate-on-scroll">
-                    <div class="item-icon">
-                        <i class="fas fa-plug"></i>
-                    </div>
-                    <h3 class="item-name">Smart Power Plugs</h3>
-                    <p class="item-description">Control any appliance remotely with smart plugs</p>
-                    <div class="item-price">
-                        <span class="price-label">From</span>
-                        <span class="price-value">R200</span>
-                        <span class="price-unit">per plug</span>
-                    </div>
-                    <ul class="item-features">
-                        <li><i class="fas fa-check"></i> Smart plug included</li>
-                        <li><i class="fas fa-check"></i> Remote on/off control</li>
-                        <li><i class="fas fa-check"></i> Energy monitoring</li>
-                        <li><i class="fas fa-check"></i> Schedule timers</li>
-                    </ul>
-                </div>
-
-                <!-- Smart Door Lock -->
-                <div class="custom-item-card animate-on-scroll">
-                    <div class="item-icon">
-                        <i class="fas fa-lock"></i>
-                    </div>
-                    <h3 class="item-name">Smart Door Lock</h3>
-                    <p class="item-description">Keyless entry with smartphone, PIN codes, and remote access</p>
-                    <div class="item-price">
-                        <span class="price-label">From</span>
-                        <span class="price-value">R1,500</span>
-                    </div>
-                    <ul class="item-features">
-                        <li><i class="fas fa-check"></i> Smart lock & installation</li>
-                        <li><i class="fas fa-check"></i> Multiple access methods</li>
-                        <li><i class="fas fa-check"></i> Activity logs</li>
-                        <li><i class="fas fa-check"></i> Guest access codes</li>
-                    </ul>
-                </div>
-
-                <!-- Security Camera -->
-                <div class="custom-item-card animate-on-scroll">
-                    <div class="item-icon">
-                        <i class="fas fa-video"></i>
-                    </div>
-                    <h3 class="item-name">Security Camera</h3>
-                    <p class="item-description">HD cameras with night vision, motion detection, and cloud storage</p>
-                    <div class="item-price">
-                        <span class="price-label">From</span>
-                        <span class="price-value">R800</span>
-                        <span class="price-unit">per camera</span>
-                    </div>
-                    <ul class="item-features">
-                        <li><i class="fas fa-check"></i> Camera & installation</li>
-                        <li><i class="fas fa-check"></i> HD video quality</li>
-                        <li><i class="fas fa-check"></i> Motion alerts</li>
-                        <li><i class="fas fa-check"></i> Cloud/local storage</li>
-                    </ul>
-                </div>
-
-
-                <!-- Motion Sensors -->
-                <div class="custom-item-card animate-on-scroll">
-                    <div class="item-icon">
-                        <i class="fas fa-walking"></i>
-                    </div>
-                    <h3 class="item-name">Motion Sensors</h3>
-                    <p class="item-description">Detect movement and trigger automation scenes</p>
-                    <div class="item-price">
-                        <span class="price-label">From</span>
-                        <span class="price-value">R300</span>
-                        <span class="price-unit">per sensor</span>
-                    </div>
-                    <ul class="item-features">
-                        <li><i class="fas fa-check"></i> Sensor & installation</li>
-                        <li><i class="fas fa-check"></i> Motion detection</li>
-                        <li><i class="fas fa-check"></i> Automation triggers</li>
-                        <li><i class="fas fa-check"></i> Battery or powered</li>
-                    </ul>
-                </div>
-
-                <!-- Smart Doorbell -->
-                <div class="custom-item-card animate-on-scroll">
-                    <div class="item-icon">
-                        <i class="fas fa-bell"></i>
-                    </div>
-                    <h3 class="item-name">Smart Doorbell</h3>
-                    <p class="item-description">Video doorbell with two-way audio and visitor alerts</p>
-                    <div class="item-price">
-                        <span class="price-label">From</span>
-                        <span class="price-value">R1,000</span>
-                    </div>
-                    <ul class="item-features">
-                        <li><i class="fas fa-check"></i> Doorbell & installation</li>
-                        <li><i class="fas fa-check"></i> HD video</li>
-                        <li><i class="fas fa-check"></i> Two-way audio</li>
-                        <li><i class="fas fa-check"></i> Motion alerts</li>
-                    </ul>
-                </div>
-
-                <!-- Smart Blinds -->
-                <div class="custom-item-card animate-on-scroll">
-                    <div class="item-icon">
-                        <i class="fas fa-align-justify"></i>
-                    </div>
-                    <h3 class="item-name">Smart Blinds/Curtains</h3>
-                    <p class="item-description">Automated window coverings with scheduling</p>
-                    <div class="item-price">
-                        <span class="price-label">From</span>
-                        <span class="price-value">R1,500</span>
-                        <span class="price-unit">per window</span>
-                    </div>
-                    <ul class="item-features">
-                        <li><i class="fas fa-check"></i> Motor & installation</li>
-                        <li><i class="fas fa-check"></i> Remote control</li>
-                        <li><i class="fas fa-check"></i> Automated scheduling</li>
-                        <li><i class="fas fa-check"></i> Voice control</li>
-                    </ul>
-                </div>
-
-                <!-- Voice Assistant Hub -->
-                <div class="custom-item-card animate-on-scroll">
-                    <div class="item-icon">
-                        <i class="fas fa-assistive-listening-systems"></i>
-                    </div>
-                    <h3 class="item-name">Voice Assistant Hub</h3>
-                    <p class="item-description">Central hub for voice control (Google/Alexa/HomeKit)</p>
-                    <div class="item-price">
-                        <span class="price-label">From</span>
-                        <span class="price-value">R500</span>
-                    </div>
-                    <ul class="item-features">
-                        <li><i class="fas fa-check"></i> Hub device included</li>
-                        <li><i class="fas fa-check"></i> Setup & configuration</li>
-                        <li><i class="fas fa-check"></i> Device integration</li>
-                        <li><i class="fas fa-check"></i> Voice command training</li>
-                    </ul>
-                </div>
-
-                <!-- Smart Garage Door -->
-                <div class="custom-item-card animate-on-scroll">
-                    <div class="item-icon">
-                        <i class="fas fa-warehouse"></i>
-                    </div>
-                    <h3 class="item-name">Smart Garage Door</h3>
-                    <p class="item-description">Open/close garage door remotely with smartphone</p>
-                    <div class="item-price">
-                        <span class="price-label">From</span>
-                        <span class="price-value">R1,200</span>
-                    </div>
-                    <ul class="item-features">
-                        <li><i class="fas fa-check"></i> Controller & installation</li>
-                        <li><i class="fas fa-check"></i> Remote access</li>
-                        <li><i class="fas fa-check"></i> Status notifications</li>
-                        <li><i class="fas fa-check"></i> Auto-close timer</li>
-                    </ul>
-                </div>
-
-                <!-- Water Leak Detector -->
-                <div class="custom-item-card animate-on-scroll">
-                    <div class="item-icon">
-                        <i class="fas fa-tint"></i>
-                    </div>
-                    <h3 class="item-name">Water Leak Detector</h3>
-                    <p class="item-description">Detect water leaks and prevent damage with instant alerts</p>
-                    <div class="item-price">
-                        <span class="price-label">From</span>
-                        <span class="price-value">R400</span>
-                        <span class="price-unit">per sensor</span>
-                    </div>
-                    <ul class="item-features">
-                        <li><i class="fas fa-check"></i> Sensor & installation</li>
-                        <li><i class="fas fa-check"></i> Instant leak alerts</li>
-                        <li><i class="fas fa-check"></i> Mobile notifications</li>
-                        <li><i class="fas fa-check"></i> Battery powered</li>
-                    </ul>
-                </div>
-
-            </div>
-
-            <!-- Custom Solutions Section -->
-            <div class="custom-solutions-section animate-on-scroll">
-                <div class="custom-solutions-content">
-                    <div class="solutions-text">
-                        <h3 class="solutions-title">
-                            <i class="fas fa-magic"></i>
-                            Need Something Custom?
-                        </h3>
-                        <p class="solutions-description">
-                            We don't just install pre-packaged solutions. Tell us what you need, and we'll create
-                            a custom smart home setup tailored exactly to your requirements and budget.
-                        </p>
-                        <ul class="solutions-features">
-                            <li><i class="fas fa-check-circle"></i> Custom device combinations</li>
-                            <li><i class="fas fa-check-circle"></i> Unique automation scenarios</li>
-                            <li><i class="fas fa-check-circle"></i> Budget-friendly solutions</li>
-                            <li><i class="fas fa-check-circle"></i> Expert consultation included</li>
-                            <li><i class="fas fa-check-circle"></i> Professional installation</li>
-                            <li><i class="fas fa-check-circle"></i> Ongoing support available</li>
-                        </ul>
-                        <button class="solutions-button">
-                            <i class="fas fa-comments"></i>
-                            Discuss Your Custom Needs
-                        </button>
-                    </div>
-                    <div class="solutions-image">
-                        <div class="solutions-card">
-                            <i class="fas fa-tools solutions-card-icon"></i>
-                            <h4>100% Customizable</h4>
-                            <p>Any device, any setup, any budget. We make it work.</p>
+            <div class="why-choose-grid-enhanced">
+                <div class="why-item-enhanced animate-on-scroll">
+                    <div class="why-icon-wrapper">
+                        <div class="why-icon-enhanced">
+                            <i class="fas fa-award"></i>
                         </div>
                     </div>
+                    <h3>Certified Professionals</h3>
+                    <p>Microsoft Azure certified developers and qualified technicians with years of industry experience delivering high-quality solutions</p>
+                    <div class="why-badge">Certified</div>
+                </div>
+
+                <div class="why-item-enhanced animate-on-scroll">
+                    <div class="why-icon-wrapper">
+                        <div class="why-icon-enhanced">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                    </div>
+                    <h3>Local SA Support</h3>
+                    <p>Based in Krugersdorp & Pretoria - providing personalized service with local knowledge and FREE installation in our service areas</p>
+                    <div class="why-badge">Local</div>
+                </div>
+
+                <div class="why-item-enhanced animate-on-scroll">
+                    <div class="why-icon-wrapper">
+                        <div class="why-icon-enhanced">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                    </div>
+                    <h3>Quality Guaranteed</h3>
+                    <p>All installations come with warranties and ongoing support to ensure your complete satisfaction and peace of mind</p>
+                    <div class="why-badge">Guaranteed</div>
+                </div>
+
+                <div class="why-item-enhanced animate-on-scroll">
+                    <div class="why-icon-wrapper">
+                        <div class="why-icon-enhanced">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                    </div>
+                    <h3>Transparent Pricing</h3>
+                    <p>Clear, upfront pricing with no hidden costs. You know exactly what you're paying for before we start any work</p>
+                    <div class="why-badge">Honest</div>
+                </div>
+
+                <div class="why-item-enhanced animate-on-scroll">
+                    <div class="why-icon-wrapper">
+                        <div class="why-icon-enhanced">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                    </div>
+                    <h3>Custom Solutions</h3>
+                    <p>Every project is tailored to your specific needs and budget, not one-size-fits-all. Your vision, our expertise</p>
+                    <div class="why-badge">Tailored</div>
+                </div>
+
+                <div class="why-item-enhanced animate-on-scroll">
+                    <div class="why-icon-wrapper">
+                        <div class="why-icon-enhanced">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                    </div>
+                    <h3>Ongoing Support</h3>
+                    <p>Comprehensive after-sales support and maintenance to keep your systems running smoothly long after installation</p>
+                    <div class="why-badge">24/7</div>
                 </div>
             </div>
         </div>
     </section>
-
 
     <!-- CTA Section -->
     <section id="contact" class="cta-section-clean">
@@ -883,10 +819,10 @@
                 <h2 class="cta-title-clean">Ready to Get Started?</h2>
                 <p class="cta-text-clean">
                     Get a free, no-obligation quote for your smart home or software project.
-                    Our team is ready to help bring your vision to life.
+                    Our certified team is ready to help bring your vision to life.
                 </p>
 
-                <button @onclick="ContactUs" class="btn-cta-large">
+                <button @onclick="OpenContactModal" class="btn-cta-large">
                     <i class="fas fa-paper-plane"></i>
                     Get Your Free Quote
                 </button>
@@ -896,9 +832,9 @@
                         <i class="fas fa-phone"></i>
                         <span>+27 81 553 8518</span>
                     </a>
-                    <a href="mailto:info@innotekso.com" class="contact-item-clean">
+                    <a href="mailto:peiso.innotekso@gmail.com" class="contact-item-clean">
                         <i class="fas fa-envelope"></i>
-                        <span>info@innotekso.com</span>
+                        <span>peiso.innotekso@gmail.com</span>
                     </a>
                     <a href="https://wa.me/27815538518" target="_blank" rel="noopener noreferrer" class="contact-item-clean">
                         <i class="fab fa-whatsapp"></i>
@@ -914,187 +850,68 @@
 <Footer />
 
 @code {
-    private List<ServiceModel> Services = new()
-    {
-        new ServiceModel
-        {
-            Id = "smart-home",
-            IconClass = "fas fa-home fa-3x",
-            Title = "Smart Home & IoT",
-            Description = "Transform your home with intelligent automation. Control lighting, security, climate, and more from your phone—anywhere, anytime."
-        },
-        new ServiceModel
-        {
-            Id = "web-development",
-            IconClass = "fas fa-laptop-code fa-3x",
-            Title = "Web Development",
-            Description = "Custom web applications built with modern frameworks. Responsive, secure, and scalable solutions for your business."
-        },
-        new ServiceModel
-        {
-            Id = "mobile-apps",
-            IconClass = "fas fa-mobile-alt fa-3x",
-            Title = "Mobile Applications",
-            Description = "Native and cross-platform mobile apps that deliver exceptional user experiences on iOS and Android."
-        },
-        new ServiceModel
-        {
-            Id = "cloud-ai",
-            IconClass = "fas fa-cloud fa-3x",
-            Title = "Cloud & AI Solutions",
-            Description = "Leverage cloud computing and artificial intelligence to automate processes and gain valuable business insights."
-        }
-    };
-
-    private List<PricingPackageModel> PricingPackages = new()
-    {
-        new PricingPackageModel
-        {
-            Name = "Starter Package",
-            Subtitle = "Perfect for apartments & small homes",
-            IconClass = "fas fa-star",
-            InstallationPrice = "R2,500 - R4,000",
-            DeviceBundlePrice = "R3,500 - R6,000",
-            Features = new List<string>
-            {
-                "Up to 6 smart devices",
-                "Smart lighting (4 points)",
-                "Smart plugs (2 units)",
-                "Mobile app setup",
-                "Voice assistant integration",
-                "Basic automation",
-                "User training",
-                "7-day support"
-            },
-            IsPopular = false
-        },
-        new PricingPackageModel
-        {
-            Name = "Advanced Package",
-            Subtitle = "Ideal for family homes & offices",
-            IconClass = "fas fa-rocket",
-            InstallationPrice = "R5,000 - R8,000",
-            DeviceBundlePrice = "R8,000 - R14,000",
-            Features = new List<string>
-            {
-                "Up to 12 smart devices",
-                "Smart lighting (8 points)",
-                "Security cameras (4 units)",
-                "Motion & door sensors",
-                "Advanced automations",
-                "Remote monitoring",
-                "Multi-user access",
-                "30-day support"
-            },
-            IsPopular = true
-        },
-        new PricingPackageModel
-        {
-            Name = "Premium Package",
-            Subtitle = "For luxury homes & estates",
-            IconClass = "fas fa-crown",
-            InstallationPrice = "R9,000 - R15,000",
-            DeviceBundlePrice = "R18,000 - R35,000+",
-            Features = new List<string>
-            {
-                "20+ smart devices",
-                "Full lighting automation",
-                "CCTV system (6-8 cameras)",
-                "Gate & garage control",
-                "Climate control",
-                "Energy monitoring",
-                "Custom automation scenes",
-                "90-day priority support"
-            },
-            IsPopular = false
-        }
-    };
-
-    private List<SupportPlanModel> SupportPlans = new()
-    {
-        new SupportPlanModel
-        {
-            Name = "Basic Care",
-            Price = "250",
-            Features = new List<string>
-            {
-                "Remote support",
-                "App troubleshooting",
-                "Firmware updates",
-                "WhatsApp/Email support"
-            }
-        },
-        new SupportPlanModel
-        {
-            Name = "Smart Care",
-            Price = "500",
-            Features = new List<string>
-            {
-                "Everything in Basic",
-                "Monthly health checks",
-                "Automation optimization",
-                "Priority response (24-48hrs)"
-            }
-        },
-        new SupportPlanModel
-        {
-            Name = "Premium Care",
-            Price = "1,000",
-            Features = new List<string>
-            {
-                "Everything in Smart Care",
-                "Proactive monitoring",
-                "Quarterly on-site visit",
-                "Priority same-day support"
-            }
-        }
-    };
-
     private Modal contactModal = default!;
+    private Modal smartHomeModal = default!;
+    private Modal webDevModal = default!;
+    private Modal mobileAppsModal = default!;
+    private Modal cloudAiModal = default!;
+    
+    private ContactModel contactModel = new();
     private bool showSuccessMessage = false;
     private bool showErrorMessage = false;
     private string errorMessage = string.Empty;
     private bool isSubmitting = false;
-    private ContactModel contactModel = new();
-    private IJSObjectReference? _module;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    private List<ServiceInfo> ServicesList = new()
     {
-        if (firstRender)
+        new ServiceInfo
         {
-            try
-            {
-                _module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/site.js");
-                await _module.InvokeVoidAsync("initScrollAnimations");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error loading JS module: {ex.Message}");
-            }
+            Id = "smart-home",
+            Title = "Smart Home Solutions",
+            Description = "Transform your home with intelligent automation systems",
+            IconClass = "fas fa-home fa-3x"
+        },
+        new ServiceInfo
+        {
+            Id = "web-development",
+            Title = "Web Development",
+            Description = "Professional websites and web applications",
+            IconClass = "fas fa-laptop-code fa-3x"
+        },
+        new ServiceInfo
+        {
+            Id = "mobile-apps",
+            Title = "Mobile Applications",
+            Description = "Native and cross-platform mobile apps",
+            IconClass = "fas fa-mobile-alt fa-3x"
+        },
+        new ServiceInfo
+        {
+            Id = "cloud-ai",
+            Title = "Cloud & AI Solutions",
+            Description = "Cloud computing and artificial intelligence integration",
+            IconClass = "fas fa-cloud fa-3x"
         }
-    }
+    };
 
-    private async Task ContactUs()
+    private async Task OpenContactModal()
     {
         contactModel = new ContactModel();
         showSuccessMessage = false;
         showErrorMessage = false;
+        errorMessage = string.Empty;
         await contactModal.ShowAsync();
     }
 
-    private async Task ContactUsForPackage(string packageName)
+    private async Task OpenContactModalWithService(string serviceName)
     {
-        contactModel = new ContactModel { ServiceType = $"Smart Home - {packageName}" };
+        // Close any open service modals first
+        await CloseAllServiceModals();
+        
+        contactModel = new ContactModel { ServiceType = serviceName };
         showSuccessMessage = false;
         showErrorMessage = false;
-        await contactModal.ShowAsync();
-    }
-
-    private async Task ContactUsForSupport(string planName)
-    {
-        contactModel = new ContactModel { ServiceType = $"Support Plan - {planName}" };
-        showSuccessMessage = false;
-        showErrorMessage = false;
+        errorMessage = string.Empty;
         await contactModal.ShowAsync();
     }
 
@@ -1105,51 +922,98 @@
 
     private async Task ScrollToServices()
     {
-        await JSRuntime.InvokeVoidAsync("scrollToElement", "services");
+        await JSRuntime.InvokeVoidAsync("eval", "document.getElementById('services').scrollIntoView({ behavior: 'smooth' })");
     }
 
-    private void NavigateToService(string serviceId)
+    private async Task NavigateToService(string serviceId)
     {
-        JSRuntime.InvokeVoidAsync("scrollToElement", serviceId);
+        await JSRuntime.InvokeVoidAsync("eval", $"document.getElementById('{serviceId}').scrollIntoView({{ behavior: 'smooth' }})");
+    }
+
+    private async Task OpenServiceModal(string serviceId)
+    {
+        switch (serviceId)
+        {
+            case "smart-home":
+                await smartHomeModal.ShowAsync();
+                break;
+            case "web-development":
+                await webDevModal.ShowAsync();
+                break;
+            case "mobile-apps":
+                await mobileAppsModal.ShowAsync();
+                break;
+            case "cloud-ai":
+                await cloudAiModal.ShowAsync();
+                break;
+        }
+    }
+
+    private async Task CloseAllServiceModals()
+    {
+        await smartHomeModal.HideAsync();
+        await webDevModal.HideAsync();
+        await mobileAppsModal.HideAsync();
+        await cloudAiModal.HideAsync();
+    }
+
+    private async Task CloseSmartHomeModal()
+    {
+        await smartHomeModal.HideAsync();
+    }
+
+    private async Task CloseWebDevModal()
+    {
+        await webDevModal.HideAsync();
+    }
+
+    private async Task CloseMobileAppsModal()
+    {
+        await mobileAppsModal.HideAsync();
+    }
+
+    private async Task CloseCloudAiModal()
+    {
+        await cloudAiModal.HideAsync();
     }
 
     private async Task HandleValidSubmit()
     {
         isSubmitting = true;
         showErrorMessage = false;
+        errorMessage = string.Empty;
         StateHasChanged();
 
         try
         {
-            var serviceInfo = !string.IsNullOrEmpty(contactModel.ServiceType)
-                ? $"\nService: {contactModel.ServiceType}\n"
-                : "";
+            Console.WriteLine($"Sending quote request for: {contactModel.FirstName} {contactModel.LastName}");
 
-            var message = $"Hello, my name is {contactModel.FirstName} {contactModel.LastName}.\n\n" +
-                          $"Contact Number: {contactModel.ContactNumber}\n" +
-                          $"Email: {contactModel.Email}\n" +
-                          serviceInfo +
-                          $"\nMessage:\n{contactModel.Message}";
+            var emailSent = await EmailService.SendQuoteRequestAsync(contactModel);
 
-            var encodedMessage = Uri.EscapeDataString(message);
-            var whatsappUrl = $"https://wa.me/27815538518?text={encodedMessage}";
+            if (emailSent)
+            {
+                Console.WriteLine("Email sent successfully!");
+                showSuccessMessage = true;
+                StateHasChanged();
 
-            await JSRuntime.InvokeVoidAsync("open", whatsappUrl, "_blank");
+                await Task.Delay(3000);
+                await contactModal.HideAsync();
 
-            showSuccessMessage = true;
-            StateHasChanged();
-
-            await Task.Delay(3000);
-            await contactModal.HideAsync();
-
-            showSuccessMessage = false;
-            contactModel = new ContactModel();
+                showSuccessMessage = false;
+                contactModel = new ContactModel();
+            }
+            else
+            {
+                Console.WriteLine("Email sending failed");
+                showErrorMessage = true;
+                errorMessage = "Failed to send your message. Please try again or contact us directly at peiso.innotekso@gmail.com";
+            }
         }
         catch (Exception ex)
         {
+            Console.WriteLine($"Error: {ex.Message}");
             showErrorMessage = true;
-            errorMessage = "Failed to send message. Please try again or contact us directly.";
-            Console.WriteLine($"Error sending message: {ex.Message}");
+            errorMessage = "An unexpected error occurred. Please try again or contact us directly.";
         }
         finally
         {
@@ -1158,11 +1022,11 @@
         }
     }
 
-    async ValueTask IAsyncDisposable.DisposeAsync()
+    private class ServiceInfo
     {
-        if (_module is not null)
-        {
-            await _module.DisposeAsync();
-        }
+        public string Id { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string IconClass { get; set; } = string.Empty;
     }
 }

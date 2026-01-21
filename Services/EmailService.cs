@@ -1,20 +1,19 @@
-using innoteksoWebNew.Models;
-using System.Net;
-using System.Net.Mail;
-using Microsoft.Extensions.Configuration;
-using InnoteksoWebNew.Services;
 using InnoteksoWeb.Models;
+using innoteksoWebNew.Models;
+using System.Net.Http;
+using System.Net.Http.Json;
 
-namespace innoteksoWebNew.Services
+namespace InnoteksoWebNew.Services
 {
     public class EmailService : IEmailService
     {
-        private readonly IConfiguration _configuration;
+        private readonly HttpClient _httpClient;
         private readonly ILogger<EmailService> _logger;
+        private const string FORMSUBMIT_ENDPOINT = "https://formsubmit.co/peiso.innotekso@gmail.com";
 
-        public EmailService(IConfiguration configuration, ILogger<EmailService> logger)
+        public EmailService(HttpClient httpClient, ILogger<EmailService> logger)
         {
-            _configuration = configuration;
+            _httpClient = httpClient;
             _logger = logger;
         }
 
@@ -22,14 +21,42 @@ namespace innoteksoWebNew.Services
         {
             try
             {
-                var subject = $"New Quote Request - {contact.ServiceType}";
-                var body = BuildQuoteRequestEmail(contact);
+                _logger.LogInformation("Sending quote request via FormSubmit.co");
 
-                return await SendEmailAsync(subject, body);
+                var formData = new Dictionary<string, string>
+                {
+                    // FormSubmit.co special fields (start with _)
+                    { "_subject", $"New Quote Request - {contact.ServiceType}" },
+                    { "_template", "box" }, // Nice HTML template
+                    { "_captcha", "false" }, // Set to "true" if you want captcha
+                    
+                    // Your data
+                    { "name", $"{contact.FirstName} {contact.LastName}" },
+                    { "first_name", contact.FirstName },
+                    { "last_name", contact.LastName },
+                    { "phone", contact.ContactNumber },
+                    { "email", contact.Email },
+                    { "service_type", contact.ServiceType ?? "Not specified" },
+                    { "message", contact.Message ?? "" }
+                };
+
+                var content = new FormUrlEncodedContent(formData);
+                var response = await _httpClient.PostAsync(FORMSUBMIT_ENDPOINT, content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    _logger.LogInformation("Quote request sent successfully");
+                    return true;
+                }
+                else
+                {
+                    _logger.LogWarning($"FormSubmit returned status: {response.StatusCode}");
+                    return false;
+                }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error sending quote request email");
+                _logger.LogError(ex, "Error sending quote request via FormSubmit.co");
                 return false;
             }
         }
@@ -38,167 +65,48 @@ namespace innoteksoWebNew.Services
         {
             try
             {
-                var subject = "New Custom Solution Quote Request";
-                var body = BuildCustomQuoteEmail(customQuote);
+                _logger.LogInformation("Sending custom quote request via FormSubmit.co");
 
-                return await SendEmailAsync(subject, body);
+                var selectedOptions = string.Join(", ", customQuote.SelectedOptions);
+
+                var formData = new Dictionary<string, string>
+                {
+                    // FormSubmit.co special fields
+                    { "_subject", "Custom Solution Quote Request - Innotekso" },
+                    { "_template", "box" },
+                    { "_captcha", "false" },
+                    
+                    // Your data
+                    { "name", $"{customQuote.FirstName} {customQuote.LastName}" },
+                    { "first_name", customQuote.FirstName },
+                    { "last_name", customQuote.LastName },
+                    { "phone", customQuote.ContactNumber },
+                    { "email", customQuote.Email },
+                    { "budget_range", customQuote.BudgetRange ?? "Not specified" },
+                    { "timeline", customQuote.Timeline ?? "Not specified" },
+                    { "interested_in", selectedOptions },
+                    { "project_description", customQuote.ProjectDescription ?? "" }
+                };
+
+                var content = new FormUrlEncodedContent(formData);
+                var response = await _httpClient.PostAsync(FORMSUBMIT_ENDPOINT, content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    _logger.LogInformation("Custom quote request sent successfully");
+                    return true;
+                }
+                else
+                {
+                    _logger.LogWarning($"FormSubmit returned status: {response.StatusCode}");
+                    return false;
+                }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error sending custom quote request email");
+                _logger.LogError(ex, "Error sending custom quote request via FormSubmit.co");
                 return false;
             }
-        }
-
-        private async Task<bool> SendEmailAsync(string subject, string body)
-        {
-            try
-            {
-                // Get email settings from configuration
-                var smtpHost = _configuration["Email:SmtpHost"];
-                var smtpPort = int.Parse(_configuration["Email:SmtpPort"] ?? "587");
-                var smtpUsername = _configuration["Email:SmtpUsername"];
-                var smtpPassword = _configuration["Email:SmtpPassword"];
-                var fromEmail = _configuration["Email:FromEmail"];
-                var toEmail = _configuration["Email:ToEmail"];
-
-                using var smtpClient = new SmtpClient(smtpHost, smtpPort)
-                {
-                    Credentials = new NetworkCredential(smtpUsername, smtpPassword),
-                    EnableSsl = true
-                };
-
-                var mailMessage = new MailMessage
-                {
-                    From = new MailAddress(fromEmail, "Innotekso Website"),
-                    Subject = subject,
-                    Body = body,
-                    IsBodyHtml = true
-                };
-
-                mailMessage.To.Add(toEmail);
-
-                await smtpClient.SendMailAsync(mailMessage);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error sending email");
-                return false;
-            }
-        }
-
-        private string BuildQuoteRequestEmail(ContactModel contact)
-        {
-            return $@"
-<!DOCTYPE html>
-<html>
-<head>
-    <style>
-        body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
-        .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-        .header {{ background: linear-gradient(135deg, #0066FF 0%, #00D9FF 100%); color: white; padding: 20px; border-radius: 10px 10px 0 0; }}
-        .content {{ background: #f9f9f9; padding: 20px; border-radius: 0 0 10px 10px; }}
-        .field {{ margin-bottom: 15px; }}
-        .label {{ font-weight: bold; color: #0066FF; }}
-        .value {{ margin-left: 10px; }}
-    </style>
-</head>
-<body>
-    <div class='container'>
-        <div class='header'>
-            <h2>New Quote Request from Innotekso Website</h2>
-        </div>
-        <div class='content'>
-            <div class='field'>
-                <span class='label'>Name:</span>
-                <span class='value'>{contact.FirstName} {contact.LastName}</span>
-            </div>
-            <div class='field'>
-                <span class='label'>Contact Number:</span>
-                <span class='value'>{contact.ContactNumber}</span>
-            </div>
-            <div class='field'>
-                <span class='label'>Email:</span>
-                <span class='value'>{contact.Email}</span>
-            </div>
-            <div class='field'>
-                <span class='label'>Service Interested In:</span>
-                <span class='value'>{contact.ServiceType}</span>
-            </div>
-            <div class='field'>
-                <span class='label'>Message:</span>
-                <div style='background: white; padding: 15px; border-radius: 5px; margin-top: 10px;'>
-                    {contact.Message.Replace("\n", "<br>")}
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
-</html>";
-        }
-
-        private string BuildCustomQuoteEmail(CustomQuoteModel customQuote)
-        {
-            var selectedOptionsHtml = string.Join("<br>", 
-                customQuote.SelectedOptions.Select(o => $"• {o}"));
-
-            return $@"
-<!DOCTYPE html>
-<html>
-<head>
-    <style>
-        body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
-        .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-        .header {{ background: linear-gradient(135deg, #0066FF 0%, #00D9FF 100%); color: white; padding: 20px; border-radius: 10px 10px 0 0; }}
-        .content {{ background: #f9f9f9; padding: 20px; border-radius: 0 0 10px 10px; }}
-        .field {{ margin-bottom: 15px; }}
-        .label {{ font-weight: bold; color: #0066FF; }}
-        .value {{ margin-left: 10px; }}
-    </style>
-</head>
-<body>
-    <div class='container'>
-        <div class='header'>
-            <h2>Custom Solution Quote Request</h2>
-        </div>
-        <div class='content'>
-            <div class='field'>
-                <span class='label'>Name:</span>
-                <span class='value'>{customQuote.FirstName} {customQuote.LastName}</span>
-            </div>
-            <div class='field'>
-                <span class='label'>Contact Number:</span>
-                <span class='value'>{customQuote.ContactNumber}</span>
-            </div>
-            <div class='field'>
-                <span class='label'>Email:</span>
-                <span class='value'>{customQuote.Email}</span>
-            </div>
-            <div class='field'>
-                <span class='label'>Budget Range:</span>
-                <span class='value'>{customQuote.BudgetRange}</span>
-            </div>
-            <div class='field'>
-                <span class='label'>Timeline:</span>
-                <span class='value'>{customQuote.Timeline}</span>
-            </div>
-            <div class='field'>
-                <span class='label'>Selected Options:</span>
-                <div style='background: white; padding: 15px; border-radius: 5px; margin-top: 10px;'>
-                    {selectedOptionsHtml}
-                </div>
-            </div>
-            <div class='field'>
-                <span class='label'>Project Description:</span>
-                <div style='background: white; padding: 15px; border-radius: 5px; margin-top: 10px;'>
-                    {customQuote.ProjectDescription.Replace("\n", "<br>")}
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
-</html>";
         }
     }
 }

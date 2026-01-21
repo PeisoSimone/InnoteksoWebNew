@@ -791,7 +791,7 @@ section {
     }
 }
 
-.animate-on-scroll {
+/*.animate-on-scroll {
     opacity: 0;
     transform: translateY(50px);
     transition: opacity 0.8s ease, transform 0.8s ease;
@@ -800,7 +800,7 @@ section {
     .animate-on-scroll.visible {
         opacity: 1;
         transform: translateY(0);
-    }
+    }*/
 
 /* ============================================
    RESPONSIVE DESIGN
@@ -3334,7 +3334,7 @@ body.menu-open {
     }
 
 /* Scroll Animations */
-.animate-on-scroll {
+/*.animate-on-scroll {
     opacity: 0;
     transform: translateY(30px);
     transition: all 0.6s ease;
@@ -3344,7 +3344,7 @@ body.menu-open {
         opacity: 1;
         transform: translateY(0);
     }
-
+*/
 /* Responsive Design */
 @media (max-width: 1200px) {
     .pricing-grid-clean {
