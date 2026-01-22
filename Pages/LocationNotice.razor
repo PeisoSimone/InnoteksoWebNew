@@ -1,0 +1,146 @@
+@implements IDisposable
+@inject IJSRuntime JSRuntime
+
+@if (ShowLocationPopup)
+{
+    <div class="location-popup-overlay" @onclick="ClosePopup">
+        <div class="location-popup" @onclick:stopPropagation="true">
+            <button class="location-close-btn" @onclick="ClosePopup">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="location-popup-content">
+                <div class="location-icon-wrapper">
+                    <img src="/images/location-pin.png" alt="Location" class="location-pin-icon" />
+                    <div class="location-pulse"></div>
+                </div>
+                
+                <h2 class="location-title">📍 We're Local to You!</h2>
+                
+                <div class="location-highlight">
+                    <h3>🎉 FREE Installation Available</h3>
+                    <p class="service-areas">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <strong>Krugersdorp & Pretoria</strong>
+                    </p>
+                    <p class="free-notice">
+                        No installation fees • No hidden charges • Professional service
+                    </p>
+                </div>
+                
+                <div class="location-info">
+                    <div class="info-card">
+                        <i class="fas fa-truck"></i>
+                        <div>
+                            <strong>Outside These Areas?</strong>
+                            <p>Affordable travel fees apply based on distance</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <strong>Quick Response</strong>
+                            <p>Same-day quotes • Flexible scheduling</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <i class="fas fa-shield-check"></i>
+                        <div>
+                            <strong>Quality Guaranteed</strong>
+                            <p>Certified technicians • 90-day warranty</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="location-actions">
+                    <button class="btn-location btn-primary-location" @onclick="GetQuote">
+                        <i class="fas fa-comment-dots"></i> Get Free Quote
+                    </button>
+                    <button class="btn-location btn-secondary-location" @onclick="CloseAndDontShow">
+                        <i class="fas fa-check"></i> Got it, thanks!
+                    </button>
+                </div>
+                
+                <p class="location-footer-text">
+                    <i class="fas fa-info-circle"></i> 
+                    This notice won't show again once dismissed
+                </p>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public EventCallback OnGetQuoteClick { get; set; }
+    
+    private bool ShowLocationPopup = false;
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Check if user has seen the location popup before
+            var hasSeenPopup = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "locationPopupSeen");
+            
+            if (string.IsNullOrEmpty(hasSeenPopup))
+            {
+                // Show popup after a short delay (3 seconds after page load)
+                await Task.Delay(3000);
+                ShowLocationPopup = true;
+                StateHasChanged();
+            }
+        }
+    }
+    
+    private void ClosePopup()
+    {
+        ShowLocationPopup = false;
+        StateHasChanged();
+    }
+    
+    private async Task CloseAndDontShow()
+    {
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "locationPopupSeen", "true");
+        ShowLocationPopup = false;
+        StateHasChanged();
+    }
+    
+    private async Task GetQuote()
+    {
+        // Close popup
+        ShowLocationPopup = false;
+        
+        // Mark as seen
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "locationPopupSeen", "true");
+        
+        // Trigger parent callback to open contact form
+        if (OnGetQuoteClick.HasDelegate)
+        {
+            await OnGetQuoteClick.InvokeAsync();
+        }
+        else
+        {
+            // Default: scroll to contact section
+            await JSRuntime.InvokeVoidAsync("eval", @"
+                document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+            ");
+        }
+        
+        StateHasChanged();
+    }
+    
+    // Public method to show popup manually
+    public void Show()
+    {
+        ShowLocationPopup = true;
+        StateHasChanged();
+    }
+    
+    public void Dispose()
+    {
+        // Cleanup if needed
+    }
+}

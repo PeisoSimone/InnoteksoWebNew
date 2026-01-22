@@ -1,0 +1,191 @@
+@implements IDisposable
+@inject IJSRuntime JSRuntime
+
+@if (ShowBanner)
+{
+    <div class="cookie-consent-overlay">
+        <div class="cookie-consent-banner">
+            <div class="cookie-consent-content">
+                <div class="cookie-icon">
+                    <i class="fas fa-cookie-bite"></i>
+                </div>
+                <div class="cookie-text">
+                    <h3>🍪 We Value Your Privacy</h3>
+                    <p>
+                        We use cookies to enhance your experience, analyze site traffic, and provide personalized content.
+                        By clicking "Accept All", you consent to our use of cookies.
+                    </p>
+                    <p class="cookie-details">
+                        We use essential cookies for site functionality and analytics cookies (Google Analytics, Microsoft Clarity)
+                        to improve our services. You can manage your preferences or learn more in our
+                        <a href="/cookie-policy" target="_blank">Cookie Policy</a> and
+                        <a href="/privacy-policy" target="_blank">Privacy Policy</a>.
+                    </p>
+                </div>
+            </div>
+
+            <div class="cookie-consent-actions">
+                <button class="btn-cookie btn-customize" @onclick="OpenSettings">
+                    <i class="fas fa-sliders-h"></i> Customize
+                </button>
+                <button class="btn-cookie btn-decline" @onclick="DeclineCookies">
+                    <i class="fas fa-times"></i> Decline
+                </button>
+                <button class="btn-cookie btn-accept" @onclick="AcceptCookies">
+                    <i class="fas fa-check"></i> Accept All
+                </button>
+            </div>
+
+            @if (ShowSettings)
+            {
+                <div class="cookie-settings">
+                    <h4>Cookie Preferences</h4>
+                    <div class="cookie-category">
+                        <div class="cookie-toggle">
+                            <input type="checkbox" id="essential" checked disabled />
+                            <label for="essential">
+                                <strong>Essential Cookies</strong> (Required)
+                                <span class="cookie-description">Necessary for website functionality</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="cookie-category">
+                        <div class="cookie-toggle">
+                            <input type="checkbox" id="analytics" @bind="AllowAnalytics" />
+                            <label for="analytics">
+                                <strong>Analytics Cookies</strong>
+                                <span class="cookie-description">Help us improve your experience (Google Analytics, Microsoft Clarity)</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="cookie-category">
+                        <div class="cookie-toggle">
+                            <input type="checkbox" id="marketing" @bind="AllowMarketing" />
+                            <label for="marketing">
+                                <strong>Marketing Cookies</strong>
+                                <span class="cookie-description">Used for personalized advertising (Currently not used)</span>
+                            </label>
+                        </div>
+                    </div>
+                    <button class="btn-cookie btn-save" @onclick="SavePreferences">
+                        <i class="fas fa-save"></i> Save Preferences
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    private bool ShowBanner = false;
+    private bool ShowSettings = false;
+    private bool AllowAnalytics = true;
+    private bool AllowMarketing = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var consent = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "cookieConsent");
+            if (string.IsNullOrEmpty(consent))
+            {
+                ShowBanner = true;
+                StateHasChanged();
+            }
+            else
+            {
+                // Load user preferences
+                await LoadPreferences();
+            }
+        }
+    }
+
+    private void OpenSettings()
+    {
+        ShowSettings = !ShowSettings;
+    }
+
+    private async Task AcceptCookies()
+    {
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "cookieConsent", "accepted");
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "allowAnalytics", "true");
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "allowMarketing", "false");
+
+        // Initialize analytics
+        await InitializeAnalytics();
+
+        ShowBanner = false;
+        StateHasChanged();
+    }
+
+    private async Task DeclineCookies()
+    {
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "cookieConsent", "declined");
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "allowAnalytics", "false");
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "allowMarketing", "false");
+
+        ShowBanner = false;
+        StateHasChanged();
+    }
+
+    private async Task SavePreferences()
+    {
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "cookieConsent", "customized");
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "allowAnalytics", AllowAnalytics.ToString().ToLower());
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "allowMarketing", AllowMarketing.ToString().ToLower());
+
+        if (AllowAnalytics)
+        {
+            await InitializeAnalytics();
+        }
+
+        ShowBanner = false;
+        ShowSettings = false;
+        StateHasChanged();
+    }
+
+    private async Task LoadPreferences()
+    {
+        var analytics = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "allowAnalytics");
+        var marketing = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "allowMarketing");
+
+        AllowAnalytics = analytics == "true";
+        AllowMarketing = marketing == "true";
+
+        if (AllowAnalytics)
+        {
+            await InitializeAnalytics();
+        }
+    }
+
+    private async Task InitializeAnalytics()
+    {
+        try
+        {
+            // Initialize Google Analytics
+            await JSRuntime.InvokeVoidAsync("eval", @"
+                if (typeof gtag !== 'undefined') {
+                    gtag('consent', 'update', {
+                        'analytics_storage': 'granted'
+                    });
+                }
+            ");
+
+            // Initialize Microsoft Clarity
+            await JSRuntime.InvokeVoidAsync("eval", @"
+                if (typeof clarity !== 'undefined') {
+                    clarity('consent');
+                }
+            ");
+        }
+        catch (Exception)
+        {
+            // Analytics scripts may not be loaded yet
+        }
+    }
+
+    public void Dispose()
+    {
+        // Cleanup if needed
+    }
+}

@@ -1,5 +1,9 @@
-﻿@inherits LayoutComponentBase
+﻿@using InnoteksoWebNew.Pages
+@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
 
 <div class="layout-container min-h-screen">
     @Body
 </div>
+
+<CookieConsent />
