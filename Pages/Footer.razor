@@ -6,15 +6,13 @@
                 <div class="footer-logo">
                     <h3>
                         <span class="logo-inn">inn</span>
-                        <span class="logo-icon">
-                            <img src="/images/icon2.webp" alt="Innotekso icon" class="footer-logo-image">
-                        </span>
+                        <span class="logo-o-circle"></span>
                         <span class="logo-tekso">tekso</span>
                     </h3>
                     <p class="footer-tagline">Innovation Meets Technology</p>
                 </div>
                 <p class="footer-description">
-                    Transforming homes and businesses across South Africa with smart technology solutions, 
+                    Transforming homes and businesses across South Africa with smart technology solutions,
                     web development, and AI integration.
                 </p>
                 <div class="footer-badges">
@@ -41,10 +39,10 @@
             <div class="footer-column">
                 <h4>Our Services</h4>
                 <ul class="footer-links">
-                    <li><a href="/#smart-home"><i class="fas fa-home"></i> Smart Home Solutions</a></li>
-                    <li><a href="/#web-development"><i class="fas fa-laptop-code"></i> Web Development</a></li>
-                    <li><a href="/#mobile-apps"><i class="fas fa-mobile-alt"></i> Mobile Apps</a></li>
-                    <li><a href="/#cloud-ai"><i class="fas fa-cloud"></i> Cloud & AI</a></li>
+                    <li><a @onclick='() => OnServiceClick.InvokeAsync("smart-home")' @onclick:preventDefault="true" style="cursor: pointer;"><i class="fas fa-home"></i> Smart Home Solutions</a></li>
+                    <li><a @onclick='() => OnServiceClick.InvokeAsync("web-development")' @onclick:preventDefault="true" style="cursor: pointer;"><i class="fas fa-laptop-code"></i> Web Development</a></li>
+                    <li><a @onclick='() => OnServiceClick.InvokeAsync("mobile-apps")' @onclick:preventDefault="true" style="cursor: pointer;"><i class="fas fa-mobile-alt"></i> Mobile Apps</a></li>
+                    <li><a @onclick='() => OnServiceClick.InvokeAsync("cloud-ai")' @onclick:preventDefault="true" style="cursor: pointer;"><i class="fas fa-cloud"></i> Cloud & AI</a></li>
                 </ul>
             </div>
 
@@ -103,7 +101,7 @@
                 &copy; @DateTime.Now.Year Innotekso (Pty) Ltd. All rights reserved.
             </p>
             <p class="footer-info">
-                <i class="fas fa-shield-alt"></i> 
+                <i class="fas fa-shield-alt"></i>
                 Your privacy and data are protected under POPIA (Protection of Personal Information Act)
             </p>
         </div>
@@ -111,5 +109,6 @@
 </footer>
 
 @code {
-    // Footer component code (if needed)
+    [Parameter]
+    public EventCallback<string> OnServiceClick { get; set; }
 }

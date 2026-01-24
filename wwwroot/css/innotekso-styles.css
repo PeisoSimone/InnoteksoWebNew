@@ -330,6 +330,7 @@ section {
     border: 2px solid rgba(255, 255, 255, 0.05);
     transition: all var(--transition);
     text-align: center;
+    cursor: pointer;
 }
 
     .service-card-clean:hover {

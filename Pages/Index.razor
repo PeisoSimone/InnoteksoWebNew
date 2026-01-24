@@ -66,9 +66,6 @@
     </script>
 </HeadContent>
 
-<!-- Navigation -->
-<NavMenu />
-
 <!-- Contact Modal -->
 <Modal @ref="contactModal" Title="Get Your Free Quote" IsScrollable="true">
     <BodyTemplate>
@@ -773,13 +770,13 @@
             <div class="services-grid-clean">
                 @foreach (var service in ServicesList)
                 {
-                    <div class="service-card-clean animate-on-scroll">
+                    <div class="service-card-clean animate-on-scroll" @onclick="() => OpenServiceModal(service.Id)">
                         <div class="service-icon-clean">
                             <i class="@service.IconClass"></i>
                         </div>
                         <h3 class="service-title-clean">@service.Title</h3>
                         <p class="service-description-clean">@service.Description</p>
-                        <button class="btn-service-learn" @onclick="() => OpenServiceModal(service.Id)">
+                        <button class="btn-service-learn" @onclick:stopPropagation="true" @onclick="() => OpenServiceModal(service.Id)">
                             Learn More <i class="fas fa-arrow-right ms-2"></i>
                         </button>
                     </div>
@@ -903,7 +900,7 @@
 </div>
 
 <!-- Footer -->
-<Footer />
+<Footer OnServiceClick="OpenServiceModal" />
 
 @code {
     private Modal contactModal = default!;
