@@ -9,7 +9,7 @@ namespace InnoteksoWebNew.Services
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<EmailService> _logger;
-        private const string FORMSUBMIT_ENDPOINT = "https://formsubmit.co/peiso.innotekso@gmail.com";
+        private const string FORMSUBMIT_ENDPOINT = "https://formsubmit.co/peiso.simone@innotekso.co.za";
 
         public EmailService(HttpClient httpClient, ILogger<EmailService> logger)
         {
