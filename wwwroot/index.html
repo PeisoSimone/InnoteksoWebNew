@@ -21,11 +21,10 @@
     <!-- Canonical -->
     <link rel="canonical" href="https://innotekso.co.za/" />
 
-    <!-- Open Graph (Facebook, WhatsApp, LinkedIn) -->
+    <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Innotekso | Innovative Technology Solutions" />
-    <meta property="og:description"
-          content="Innovative software and technology solutions designed to empower modern businesses." />
+    <meta property="og:description" content="Innovative software and technology solutions designed to empower modern businesses." />
     <meta property="og:url" content="https://innotekso.co.za/" />
     <meta property="og:image" content="https://innotekso.co.za/images/og-image.webp" />
     <meta property="og:site_name" content="Innotekso" />
@@ -33,12 +32,16 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Innotekso | Innovative Technology Solutions" />
-    <meta name="twitter:description"
-          content="Innovative software solutions helping businesses scale and succeed." />
+    <meta name="twitter:description" content="Innovative software solutions helping businesses scale and succeed." />
     <meta name="twitter:image" content="https://innotekso.co.za/images/og-image.webp" />
 
     <!-- Base -->
     <base href="/" />
+
+    <!-- ⚡ PRELOAD CRITICAL RESOURCES -->
+    <link rel="preload" href="_framework/blazor.webassembly.js" as="script">
+    <!--<link rel="preload" href="_framework/dotnet.wasm" as="fetch" crossorigin="anonymous">-->
+    <link rel="preload" href="css/app.css" as="style">
 
     <!-- Styles -->
     <link href="css/app.css" rel="stylesheet" />
@@ -80,16 +83,199 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
+    <!-- ⚡ BUTTERY SMOOTH LOADING SCREEN -->
+    <style>
+        /* Loading container - GPU accelerated for smooth performance */
+        .loading-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            /* 🎨 Matches your landing page dark blue gradient */
+            background: linear-gradient(135deg, #0a1628 0%, #1a2842 50%, #0d1b2a 100%);
+            z-index: 9999;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            /* 🚀 GPU acceleration for buttery smooth animation */
+            will-change: transform, opacity, border-radius;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .loading-brand {
+            text-align: center;
+            animation: fadeInUp 0.8s ease-out;
+            will-change: transform, opacity;
+        }
+
+        .loading-title {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem 0;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        /* Highlight the 'o' like your logo */
+        .loading-title-highlight {
+            color: #4a9eff;
+            text-shadow: 0 0 20px rgba(74, 158, 255, 0.5);
+        }
+
+        .loading-subtitle {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.875rem;
+            margin: 0 0 2.5rem 0;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .loading-progress-container {
+            width: 350px;
+            max-width: 90%;
+        }
+
+        .loading-bar {
+            width: 100%;
+            height: 3px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .loading-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #4a9eff 0%, #64b5ff 100%);
+            border-radius: 10px;
+            animation: loadingProgress 2.5s ease-in-out infinite;
+            box-shadow: 0 0 15px rgba(74, 158, 255, 0.5);
+            will-change: width;
+        }
+
+        .loading-text {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.875rem;
+            text-align: center;
+            margin: 0;
+            opacity: 1;
+            transition: opacity 0.4s ease-out;
+        }
+
+        /* Smooth animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes loadingProgress {
+            0% {
+                width: 0%;
+            }
+
+            30% {
+                width: 45%;
+            }
+
+            60% {
+                width: 75%;
+            }
+
+            100% {
+                width: 95%;
+            }
+        }
+
+        /* 🎯 SLOW, SMOOTH, BUTTERY FADE OUT */
+        .blazor-ready .loading-container {
+            /* Slow, smooth transitions - no lag! */
+            transition: transform 1.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 1.4s cubic-bezier(0.4, 0, 0.2, 1), border-radius 1.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform: scale(0) translateZ(0);
+            opacity: 0;
+            border-radius: 50%;
+        }
+
+        /* Fade out text slightly before main animation */
+        .blazor-ready .loading-text {
+            opacity: 0;
+            transition: opacity 0.6s ease-out;
+        }
+
+        .blazor-ready .loading-progress-container {
+            opacity: 0;
+            transition: opacity 0.8s ease-out;
+        }
+
+        /* Remove from DOM after animation */
+        .blazor-loaded .loading-container {
+            display: none;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .loading-title {
+                font-size: 2rem;
+            }
+
+            .loading-subtitle {
+                font-size: 0.75rem;
+            }
+        }
+
+        /* Reduced motion accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            .loading-container,
+            .loading-brand,
+            .loading-progress {
+                animation: none !important;
+            }
+
+            .blazor-ready .loading-container {
+                transition: opacity 0.5s ease;
+                opacity: 0;
+            }
+        }
+
+        /* Performance optimization hints */
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+
 </head>
 
 <body>
     <div id="app">
-        <div class="loading-container" aria-live="polite">
-            <div class="spinner-grow text-primary loading-spinner" role="status">
-                <span class="visually-hidden">Loading Innotekso...</span>
+        <!-- ⚡ BUTTERY SMOOTH LOADING SCREEN -->
+        <div class="loading-container" aria-live="polite" aria-label="Loading application">
+            <div class="loading-brand">
+                <h1 class="loading-title">
+                    inn<span class="loading-title-highlight">o</span>tekso
+                </h1>
+                <p class="loading-subtitle">Innovation Meets Technology</p>
             </div>
-            <div class="loading-text">
-                Innotekso is loading...
+
+            <div class="loading-progress-container">
+                <div class="loading-bar">
+                    <div class="loading-progress"></div>
+                </div>
+
+                <p class="loading-text" id="loadingText">
+                    Preparing your experience...
+                </p>
             </div>
         </div>
     </div>
@@ -105,11 +291,68 @@
         </div>
     </div>
 
+    <!-- ⚡ Loading animation controller -->
+    <script>
+        (function () {
+            const messages = [
+                'Preparing your experience',
+                'Loading innovative solutions',
+                'Connecting to the cloud',
+                'Almost ready',
+                'Starting up'
+            ];
+
+            let msgIndex = 0;
+            const loadingText = document.getElementById('loadingText');
+
+            function updateText() {
+                if (loadingText && !document.body.classList.contains('blazor-ready')) {
+                    loadingText.textContent = messages[msgIndex] + '...';
+                    msgIndex = (msgIndex + 1) % messages.length;
+                }
+            }
+
+            // Update every 2 seconds
+            const textInterval = setInterval(updateText, 2000);
+
+            // Trigger smooth fade when Blazor loads
+            window.addEventListener('load', function () {
+                // Small delay before starting fade
+                setTimeout(function () {
+                    clearInterval(textInterval);
+
+                    // Request animation frame for smooth start
+                    requestAnimationFrame(function () {
+                        document.body.classList.add('blazor-ready');
+                    });
+
+                    // Remove from DOM after animation completes (1.4s animation + 0.1s buffer)
+                    setTimeout(function () {
+                        document.body.classList.add('blazor-loaded');
+                    }, 1500);
+                }, 200);
+            });
+        })();
+    </script>
+
     <!-- Scripts -->
-    <!--<script src="js/scrollAnimations.js" defer></script>-->
     <script src="_framework/blazor.webassembly.js" defer></script>
     <script src="js/bootstrap.bundle.min.js" defer></script>
     <script src="_content/Blazor.Bootstrap/blazor.bootstrap.js" defer></script>
     <script type="module" src="js/site.js" defer></script>
+    <!--<script src="service-worker.js"></script>-->
+
+    <!-- ⚡ Service Worker Registration -->
+    <!--<script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(function (reg) {
+                    console.log('✅ Service Worker registered');
+                })
+                .catch(function (err) {
+                    console.log('❌ Service Worker registration failed:', err);
+                });
+        }
+    </script>-->
 </body>
 </html>

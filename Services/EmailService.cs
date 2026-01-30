@@ -1,5 +1,5 @@
-using InnoteksoWeb.Models;
-using innoteksoWebNew.Models;
+
+using InnoteksoWebNew.Models;
 using System.Net.Http;
 using System.Net.Http.Json;
 

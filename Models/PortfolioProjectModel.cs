@@ -1,4 +1,4 @@
-namespace innoteksoWebNew.Models
+namespace InnoteksoWebNew.Models
 {
     public class PortfolioProjectModel
     {

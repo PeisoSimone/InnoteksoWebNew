@@ -1,0 +1,13 @@
+﻿@* LazyLoader.razor *@
+@if (ComponentType != null)
+{
+    <DynamicComponent Type="ComponentType" />
+}
+else
+{
+    <div class="spinner-border"></div>
+}
+
+@code {
+    [Parameter] public Type? ComponentType { get; set; }
+}

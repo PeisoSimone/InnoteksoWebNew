@@ -1,18 +1,16 @@
-﻿const purgecss = require('@fullhuman/postcss-purgecss');
-const tailwindcss = require('tailwindcss');
-const autoprefixer = require('autoprefixer');
-
+﻿// postcss.config.js
 module.exports = {
     plugins: [
-        tailwindcss,
-        autoprefixer,
-        purgecss({
+        require('tailwindcss'),
+        require('autoprefixer'),
+        require('@fullhuman/postcss-purgecss')({
             content: [
-                './wwwroot/**/*.html',
-                './wwwroot/**/*.js',
-                './**/*.razor'  // Adding Razor files to be scanned
+                './**/*.html',
+                './**/*.razor',
+                './**/*.cshtml',
             ],
-            defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || []
+            defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || [],
+            safelist: ['active', 'show', 'collapse', 'collapsing']
         })
     ]
-};
+}

@@ -1,21 +1,41 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
-
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <BlazorEnableCompression>true</BlazorEnableCompression>
-    <PublishTrimmed>true</PublishTrimmed>
-    <InvariantGlobalization>true</InvariantGlobalization>
-    <DebuggerSupport>false</DebuggerSupport>
-    <RunAOTCompilation>true</RunAOTCompilation>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Blazor.Bootstrap" Version="3.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.0" PrivateAssets="all" />
-    <PackageReference Include="SendGrid" Version="9.29.3" />
-  </ItemGroup>
-
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		
+		<!-- Disable AOT and Native compilation -->
+		<RunAOTCompilation>false</RunAOTCompilation>
+		<WasmNativeStrip>false</WasmNativeStrip>
+		
+		<!-- ENABLE JSON Reflection (this fixes your error!) -->
+		<JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
+		
+		<!-- Moderate trimming (safer than 'full') -->
+		<PublishTrimmed>true</PublishTrimmed>
+		<TrimMode>partial</TrimMode>
+		
+		<!-- Globalization settings -->
+		<InvariantGlobalization>true</InvariantGlobalization>
+		<BlazorWebAssemblyLoadAllGlobalizationData>false</BlazorWebAssemblyLoadAllGlobalizationData>
+		<BlazorWebAssemblyPreserveCollationData>false</BlazorWebAssemblyPreserveCollationData>
+		
+		<!-- Compression -->
+		<BlazorEnableCompression>true</BlazorEnableCompression>
+		<CompressionLevel>Optimal</CompressionLevel>
+		
+		<!-- Service Worker -->
+		<ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+		
+		<!-- Performance -->
+		<TieredCompilation>true</TieredCompilation>
+		<Optimize>true</Optimize>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="Blazor.Bootstrap" Version="3.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.11" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.11" PrivateAssets="all" />
+		<PackageReference Include="SendGrid" Version="9.29.3" />
+	</ItemGroup>
 </Project>

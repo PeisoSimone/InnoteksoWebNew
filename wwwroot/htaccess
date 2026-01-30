@@ -1,0 +1,62 @@
+# ⚡ AFRIHOST OPTIMIZED .HTACCESS FOR BLAZOR WASM
+
+RewriteEngine On
+
+# Force HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# ═══════════════════════════════════════════════════════════════════
+# 🗜️ COMPRESSION
+# ═══════════════════════════════════════════════════════════════════
+
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css text/javascript text/plain text/xml
+    AddOutputFilterByType DEFLATE application/javascript application/x-javascript application/json application/xml
+    AddOutputFilterByType DEFLATE application/wasm application/octet-stream
+</IfModule>
+
+# ═══════════════════════════════════════════════════════════════════
+# 🚀 BROWSER CACHING
+# ═══════════════════════════════════════════════════════════════════
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/* "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType application/wasm "access plus 1 month"
+    ExpiresByType font/* "access plus 1 year"
+    ExpiresByType text/html "access plus 1 hour"
+</IfModule>
+
+# ═══════════════════════════════════════════════════════════════════
+# 📝 MIME TYPES
+# ═══════════════════════════════════════════════════════════════════
+
+<IfModule mod_mime.c>
+    AddType application/wasm .wasm
+    AddType application/octet-stream .dll
+    AddType application/json .json
+</IfModule>
+
+# ═══════════════════════════════════════════════════════════════════
+# 🔄 BLAZOR ROUTING
+# ═══════════════════════════════════════════════════════════════════
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ /index.html [L]
+
+# ═══════════════════════════════════════════════════════════════════
+# 🛡️ SECURITY
+# ═══════════════════════════════════════════════════════════════════
+
+<IfModule mod_headers.c>
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set X-Content-Type-Options "nosniff"
+</IfModule>
+
+Options -Indexes
+ErrorDocument 404 /index.html

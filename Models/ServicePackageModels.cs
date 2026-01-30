@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace innoteksoWebNew.Models
+namespace InnoteksoWebNew.Models
 {
     /// <summary>
     /// Model for service package information - Updated with 50% reduced prices
