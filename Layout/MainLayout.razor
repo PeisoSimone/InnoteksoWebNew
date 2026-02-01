@@ -1,9 +1,36 @@
 ﻿@using InnoteksoWebNew.Pages
 @inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
 
 <div class="layout-container min-h-screen">
     @Body
 </div>
 
 <CookieConsent />
+
+@code {
+    private bool _dismissed;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // We intentionally do NOT gate on firstRender alone.
+        //
+        // Why: CookieConsent reads localStorage asynchronously in its own
+        // OnAfterRenderAsync, then calls StateHasChanged() to show (or hide)
+        // the banner.  That triggers a second render of MainLayout.  If we
+        // dismissed the loader on the very first render we'd disappear before
+        // the cookie banner (or the "no banner needed" state) had actually
+        // painted.
+        //
+        // _dismissed ensures we call the JS exactly once — on whichever
+        // render cycle actually completes last before the user sees anything.
+        // requestAnimationFrame inside the JS guarantees the browser has
+        // committed the frame to the screen before the loader exits.
+
+        if (_dismissed) return;
+        _dismissed = true;
+
+        await JSRuntime.InvokeVoidAsync("innoteksoLoader.dismiss");
+    }
+}

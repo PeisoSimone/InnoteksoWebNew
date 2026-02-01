@@ -1,33 +1,150 @@
-# ⚡ AFRIHOST OPTIMIZED .HTACCESS FOR BLAZOR WASM
+# ═══════════════════════════════════════════════════════════════════
+# INNOTEKSO — AFRIHOST LINUX OPTIMISED .htaccess
+# Blazor WebAssembly | Production-Ready
+# ═══════════════════════════════════════════════════════════════════
 
+# ─── FORCE HTTPS ──────────────────────────────────────────────────
 RewriteEngine On
-
-# Force HTTPS
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
+# ─── STRIP www REDIRECT (canonical: innotekso.co.za) ─────────────
+# Toggle: uncomment these 3 lines if you want www → non-www
+# RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+# RewriteRule ^(.*)$ https://%1%{REQUEST_URI} [L,R=301]
+
 # ═══════════════════════════════════════════════════════════════════
-# 🗜️ COMPRESSION
+# 🗜️  COMPRESSION — Brotli first, then gzip/deflate fallback
 # ═══════════════════════════════════════════════════════════════════
 
+# Brotli — Afrihost supports mod_brotli on most plans
+<IfModule mod_brotli.c>
+    BrotliCompressionLevel 6
+    AddOutputFilterByType BROTLI text/html
+    AddOutputFilterByType BROTLI text/css
+    AddOutputFilterByType BROTLI text/javascript
+    AddOutputFilterByType BROTLI application/javascript
+    AddOutputFilterByType BROTLI application/json
+    AddOutputFilterByType BROTLI application/xml
+    AddOutputFilterByType BROTLI application/wasm
+    AddOutputFilterByType BROTLI image/svg+xml
+</IfModule>
+
+# Gzip / Deflate fallback (always available on Afrihost)
 <IfModule mod_deflate.c>
-    AddOutputFilterByType DEFLATE text/html text/css text/javascript text/plain text/xml
-    AddOutputFilterByType DEFLATE application/javascript application/x-javascript application/json application/xml
-    AddOutputFilterByType DEFLATE application/wasm application/octet-stream
+    # Only compress if not already compressed
+    <IfModule mod_headers.c>
+        RequestHeader set Accept-Encoding %{HTTP:Accept-Encoding}s
+    </IfModule>
+
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/wasm
+    AddOutputFilterByType DEFLATE application/octet-stream
+    AddOutputFilterByType DEFLATE image/svg+xml
+
+    # Don't compress already-compressed formats
+    BrowserMatch ^Mozilla/4 gzip-only-text/html
+    BrowserMatch ^Mozilla/4\.0[2-3] gzip
+    BrowserMatch MSIE[[:space:]]6 gzip-only-text/html
 </IfModule>
 
 # ═══════════════════════════════════════════════════════════════════
-# 🚀 BROWSER CACHING
+# 📦 PRE-COMPRESSED ASSET SERVING
+# If you run: dotnet publish -c Release -p:PublishAot=false
+#             publish/wwwroot will contain .gz and .br files
+# This block serves them directly — zero runtime compression cost.
+# ═══════════════════════════════════════════════════════════════════
+
+<IfModule mod_rewrite.c>
+    # Brotli pre-compressed
+    RewriteCond %{HTTP:Accept-Encoding} br
+    RewriteCond %{REQUEST_URI} \.(js|css|wasm|dll|json)$
+    RewriteCond %{REQUEST_FILENAME}.br -f
+    RewriteRule ^(.+)$ $1.br [QSA]
+
+    # Gzip pre-compressed fallback
+    RewriteCond %{HTTP:Accept-Encoding} gzip
+    RewriteCond %{REQUEST_URI} \.(js|css|wasm|dll|json)$
+    RewriteCond %{REQUEST_FILENAME}.gz -f
+    RewriteRule ^(.+)$ $1.gz [QSA]
+</IfModule>
+
+# Correct content-type when serving pre-compressed files
+<IfModule mod_mime.c>
+    AddType application/javascript .js.br
+    AddType application/javascript .js.gz
+    AddType text/css .css.br
+    AddType text/css .css.gz
+    AddType application/wasm .wasm.br
+    AddType application/wasm .wasm.gz
+    AddType application/octet-stream .dll.br
+    AddType application/octet-stream .dll.gz
+</IfModule>
+
+# Set Content-Encoding when serving pre-compressed
+<Files *.br>
+    Header set Content-Encoding br
+</Files>
+<Files *.gz>
+    Header set Content-Encoding gzip
+</Files>
+
+# ═══════════════════════════════════════════════════════════════════
+# 🚀 BROWSER CACHING — Aggressive tiers
 # ═══════════════════════════════════════════════════════════════════
 
 <IfModule mod_expires.c>
     ExpiresActive On
-    ExpiresByType image/* "access plus 1 year"
+
+    # Blazor framework assets — fingerprinted, immutable
+    <LocationMatch "\/_framework\/">
+        ExpiresDefault "access plus 1 year"
+        <IfModule mod_headers.c>
+            Header set Cache-Control "public, immutable, max-age=31536000"
+        </IfModule>
+    </LocationMatch>
+
+    # WASM binary — large, fingerprinted
+    ExpiresByType application/wasm "access plus 1 year"
+
+    # DLLs shipped by Blazor — fingerprinted
+    ExpiresByType application/octet-stream "access plus 1 year"
+
+    # Static images — long-lived
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+
+    # Fonts
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType application/font-woff2 "access plus 1 year"
+
+    # CSS & JS (non-framework) — 1 month
     ExpiresByType text/css "access plus 1 month"
     ExpiresByType application/javascript "access plus 1 month"
-    ExpiresByType application/wasm "access plus 1 month"
-    ExpiresByType font/* "access plus 1 year"
-    ExpiresByType text/html "access plus 1 hour"
+    ExpiresByType text/javascript "access plus 1 month"
+
+    # JSON config
+    ExpiresByType application/json "access plus 1 hour"
+
+    # HTML — short, always revalidate
+    ExpiresByType text/html "access plus 5 minutes"
+
+    # XML (sitemap)
+    ExpiresByType application/xml "access plus 1 day"
+    ExpiresByType text/xml "access plus 1 day"
 </IfModule>
 
 # ═══════════════════════════════════════════════════════════════════
@@ -38,25 +155,81 @@ RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
     AddType application/wasm .wasm
     AddType application/octet-stream .dll
     AddType application/json .json
+    AddType text/xml .xml
+    AddType image/webp .webp
+    AddType font/woff2 .woff2
+    AddType font/woff .woff
 </IfModule>
 
 # ═══════════════════════════════════════════════════════════════════
-# 🔄 BLAZOR ROUTING
-# ═══════════════════════════════════════════════════════════════════
-
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ /index.html [L]
-
-# ═══════════════════════════════════════════════════════════════════
-# 🛡️ SECURITY
+# 🌐 HTTP/2 PUSH HINTS (if your Afrihost plan supports HTTP/2)
+# These are ignored gracefully on HTTP/1.1
 # ═══════════════════════════════════════════════════════════════════
 
 <IfModule mod_headers.c>
-    Header always set X-Frame-Options "SAMEORIGIN"
-    Header always set X-XSS-Protection "1; mode=block"
-    Header always set X-Content-Type-Options "nosniff"
+    <LocationMatch "^/$">
+        Header add Link "</css/app.css>; rel=preload; as=style"
+        Header add Link "</_framework/blazor.webassembly.js>; rel=preload; as=script"
+    </LocationMatch>
 </IfModule>
 
+# ═══════════════════════════════════════════════════════════════════
+# 🔄 BLAZOR CLIENT-SIDE ROUTING (SPA fallback)
+# ═══════════════════════════════════════════════════════════════════
+
+# Serve robots.txt and sitemap.xml directly — never fall through to index.html
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule . - [L]
+
+# SPA catch-all: everything else → index.html
+RewriteRule ^(.*)$ /index.html [L]
+
+# ═══════════════════════════════════════════════════════════════════
+# 🛡️  SECURITY HEADERS
+# ═══════════════════════════════════════════════════════════════════
+
+<IfModule mod_headers.c>
+    # Clickjacking protection
+    Header always set X-Frame-Options "SAMEORIGIN"
+
+    # XSS filter (legacy browsers)
+    Header always set X-XSS-Protection "1; mode=block"
+
+    # Prevent MIME sniffing
+    Header always set X-Content-Type-Options "nosniff"
+
+    # Referrer policy — send origin only
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # Permissions policy — restrict geolocation, camera, mic
+    Header always set Permissions-Policy "geolocation=(), camera=(), microphone=()"
+
+    # Content Security Policy
+    # Adjust 'unsafe-inline' out once Blazor stops needing it
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' https://cdnjs.cloudflare.com; connect-src 'self' https://formsubmit.co; frame-ancestors 'self'"
+
+    # Strict Transport Security — 1 year, include subdomains
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+</IfModule>
+
+# ═══════════════════════════════════════════════════════════════════
+# 🚫 SECURITY — DENY SENSITIVE FILES & DIRECTORY LISTING
+# ═══════════════════════════════════════════════════════════════════
+
 Options -Indexes
+
+# Block access to hidden files / directories
+<LocationMatch "^/\.">
+    Order deny,allow
+    Deny from all
+</LocationMatch>
+
+# Block .env, config leaks
+<FilesMatch "\.(env|bak|log|tmp|swp|old|orig)$">
+    Order deny,allow
+    Deny from all
+</FilesMatch>
+
+# Custom 404 — Blazor handles it client-side
 ErrorDocument 404 /index.html

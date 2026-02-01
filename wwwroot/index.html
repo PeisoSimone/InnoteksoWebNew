@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- SEO Meta -->
-    <title>Innotekso | Innovative Technology & Software Solutions for Businesses</title>
+    <title>Innotekso | Innovative Technology &amp; Software Solutions for Businesses</title>
 
     <meta name="description"
           content="Innotekso delivers innovative technology and software solutions that empower businesses to grow, automate, and scale. Transform your ideas into powerful digital products." />
@@ -38,54 +38,101 @@
     <!-- Base -->
     <base href="/" />
 
-    <!-- ⚡ PRELOAD CRITICAL RESOURCES -->
-    <link rel="preload" href="_framework/blazor.webassembly.js" as="script">
-    <!--<link rel="preload" href="_framework/dotnet.wasm" as="fetch" crossorigin="anonymous">-->
-    <link rel="preload" href="css/app.css" as="style">
+    <!-- ═══════════════════════════════════════════════════════════
+         ⚡ RESOURCE HINTS
+         ═══════════════════════════════════════════════════════════ -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+    <link rel="preconnect" href="https://formsubmit.co" />
 
-    <!-- Styles -->
+    <link rel="preload" href="css/app.css" as="style" />
+    <link rel="preload" href="css/innotekso-styles.css" as="style" />
+    <link rel="preload" href="css/unified-consistent-styles.css" as="style" />
+    <link rel="preload" href="css/output.css" as="style" />
+    <link rel="preload" href="_framework/blazor.webassembly.js" as="script" />
+    <link rel="preload" href="images/icon.webp" as="image" />
+
+    <link rel="prefetch" href="css/bootstrap.min.css" />
+    <link rel="prefetch" href="css/modal-styles.css" />
+
+    <!-- ═══════════════════════════════════════════════════════════
+         📄 STYLESHEETS
+         ═══════════════════════════════════════════════════════════ -->
+    <!-- Critical — render-blocking on purpose -->
     <link href="css/app.css" rel="stylesheet" />
     <link href="css/innotekso-styles.css" rel="stylesheet" />
     <link href="css/unified-consistent-styles.css" rel="stylesheet" />
-    <link href="css/modal-styles.css" rel="stylesheet" />
     <link href="css/output.css" rel="stylesheet" />
-    <link href="css/custom-quote-enhancements.css" rel="stylesheet" />
-    <link href="css/footer-enhanced.css" rel="stylesheet" />
-    <link href="css/legal-pages.css" rel="stylesheet" />
-    <link href="css/popups.css" rel="stylesheet" />
 
-    <!-- Bootstrap (non-blocking) -->
-    <link rel="stylesheet" href="css/bootstrap.min.css" media="print" onload="this.media='all'">
+    <!-- Non-critical — async -->
+    <link rel="stylesheet" href="css/bootstrap.min.css" media="print" onload="this.media='all'" />
+    <link href="css/modal-styles.css" rel="stylesheet" media="print" onload="this.media='all'" />
+    <link href="css/custom-quote-enhancements.css" rel="stylesheet" media="print" onload="this.media='all'" />
+    <link href="css/footer-enhanced.css" rel="stylesheet" media="print" onload="this.media='all'" />
+    <link href="css/legal-pages.css" rel="stylesheet" media="print" onload="this.media='all'" />
+    <link href="css/popups.css" rel="stylesheet" media="print" onload="this.media='all'" />
+
+    <!-- FontAwesome — async -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          media="print" onload="this.media='all'" />
+    <noscript>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    </noscript>
 
     <!-- Icons -->
     <link rel="icon" type="image/webp" href="images/icon.webp" />
     <link rel="apple-touch-icon" href="images/icon.webp" />
 
+    <!-- ═══════════════════════════════════════════════════════════
+         📊 STRUCTURED DATA
+         ═══════════════════════════════════════════════════════════ -->
     <script type="application/ld+json">
         {
           "@context": "https://schema.org",
           "@type": "ProfessionalService",
           "name": "Innotekso",
-          "description": "Innovative technology and software solutions for businesses",
+          "description": "Innovative technology and software solutions for businesses in South Africa",
           "url": "https://innotekso.co.za",
           "logo": "https://innotekso.co.za/images/icon.webp",
+          "telephone": "+27815538518",
+          "email": "peiso.simone@innotekso.co.za",
           "address": {
             "@type": "PostalAddress",
-            "addressCountry": "ZA",
-            "addressRegion": "Gauteng"
+            "addressLocality": "Krugersdorp",
+            "addressRegion": "Gauteng",
+            "addressCountry": "ZA"
+          },
+          "areaServed": {
+            "@type": "GeoCircle",
+            "geoMidpoint": {
+              "@type": "GeoCoordinates",
+              "latitude": "-26.0767",
+              "longitude": "27.7487"
+            },
+            "geoRadius": "100"
           },
           "sameAs": [
             "https://www.linkedin.com/company/innotekso"
-          ]
+          ],
+          "offers": {
+            "@type": "Offer",
+            "priceCurrency": "ZAR",
+            "priceSpecification": [
+              { "@type": "PriceSpecification", "name": "Smart Home Starter", "price": "2500" },
+              { "@type": "PriceSpecification", "name": "Web Starter", "price": "3000" },
+              { "@type": "PriceSpecification", "name": "Mobile Basic App", "price": "4000" }
+            ]
+          }
         }
     </script>
 
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-
-    <!-- ⚡ BUTTERY SMOOTH LOADING SCREEN -->
+    <!-- ═══════════════════════════════════════════════════════════
+         ⏳ LOADING SCREEN + DISMISS API
+         ═══════════════════════════════════════════════════════════
+         The loader is dismissed ONLY when MainLayout.razor calls
+         window.innoteksoLoader.dismiss() — never on a browser event.
+         A 12-second safety timeout is the only automatic fallback.
+         ═══════════════════════════════════════════════════════════ -->
     <style>
-        /* Loading container - GPU accelerated for smooth performance */
         .loading-container {
             position: fixed;
             top: 0;
@@ -96,42 +143,37 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            /* 🎨 Matches your landing page dark blue gradient */
             background: linear-gradient(135deg, #0a1628 0%, #1a2842 50%, #0d1b2a 100%);
             z-index: 9999;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            /* 🚀 GPU acceleration for buttery smooth animation */
-            will-change: transform, opacity, border-radius;
+            will-change: transform, opacity;
             transform: translateZ(0);
-            backface-visibility: hidden;
             -webkit-font-smoothing: antialiased;
         }
 
         .loading-brand {
             text-align: center;
             animation: fadeInUp 0.8s ease-out;
-            will-change: transform, opacity;
         }
 
         .loading-title {
-            color: white;
+            color: #fff;
             font-size: 2.5rem;
             font-weight: 700;
-            margin: 0 0 0.5rem 0;
+            margin: 0 0 0.5rem;
             letter-spacing: 2px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 10px rgba(0,0,0,.3);
         }
 
-        /* Highlight the 'o' like your logo */
         .loading-title-highlight {
             color: #4a9eff;
-            text-shadow: 0 0 20px rgba(74, 158, 255, 0.5);
+            text-shadow: 0 0 20px rgba(74,158,255,.5);
         }
 
         .loading-subtitle {
-            color: rgba(255,255,255,0.7);
+            color: rgba(255,255,255,.7);
             font-size: 0.875rem;
-            margin: 0 0 2.5rem 0;
+            margin: 0 0 2.5rem;
             letter-spacing: 3px;
             text-transform: uppercase;
         }
@@ -144,7 +186,7 @@
         .loading-bar {
             width: 100%;
             height: 3px;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,.1);
             border-radius: 10px;
             overflow: hidden;
             margin-bottom: 1rem;
@@ -152,23 +194,21 @@
 
         .loading-progress {
             height: 100%;
-            background: linear-gradient(90deg, #4a9eff 0%, #64b5ff 100%);
+            background: linear-gradient(90deg, #4a9eff, #64b5ff);
             border-radius: 10px;
-            animation: loadingProgress 2.5s ease-in-out infinite;
-            box-shadow: 0 0 15px rgba(74, 158, 255, 0.5);
-            will-change: width;
+            /* Loops continuously until dismiss() fires */
+            animation: loadingProgress 3s ease-in-out infinite;
+            box-shadow: 0 0 15px rgba(74,158,255,.5);
         }
 
         .loading-text {
-            color: rgba(255,255,255,0.8);
+            color: rgba(255,255,255,.8);
             font-size: 0.875rem;
             text-align: center;
             margin: 0;
-            opacity: 1;
             transition: opacity 0.4s ease-out;
         }
 
-        /* Smooth animations */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -186,12 +226,8 @@
                 width: 0%;
             }
 
-            30% {
-                width: 45%;
-            }
-
-            60% {
-                width: 75%;
+            50% {
+                width: 70%;
             }
 
             100% {
@@ -199,32 +235,24 @@
             }
         }
 
-        /* 🎯 SLOW, SMOOTH, BUTTERY FADE OUT */
-        .blazor-ready .loading-container {
-            /* Slow, smooth transitions - no lag! */
-            transition: transform 1.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 1.4s cubic-bezier(0.4, 0, 0.2, 1), border-radius 1.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        /* ── EXIT: applied by JS when dismiss() fires ────────── */
+        .loading-container.dismissing {
+            transition: transform 1.2s cubic-bezier(.34,1.56,.64,1), opacity 1.2s cubic-bezier(.4,0,.2,1);
             transform: scale(0) translateZ(0);
             opacity: 0;
-            border-radius: 50%;
         }
 
-        /* Fade out text slightly before main animation */
-        .blazor-ready .loading-text {
-            opacity: 0;
-            transition: opacity 0.6s ease-out;
-        }
+            .loading-container.dismissing .loading-text,
+            .loading-container.dismissing .loading-progress-container {
+                opacity: 0;
+                transition: opacity 0.5s ease-out;
+            }
 
-        .blazor-ready .loading-progress-container {
-            opacity: 0;
-            transition: opacity 0.8s ease-out;
-        }
-
-        /* Remove from DOM after animation */
-        .blazor-loaded .loading-container {
+        /* ── FULLY GONE: applied after transition ends ───────── */
+        .loading-container.dismissed {
             display: none;
         }
 
-        /* Mobile responsive */
         @media (max-width: 768px) {
             .loading-title {
                 font-size: 2rem;
@@ -235,124 +263,140 @@
             }
         }
 
-        /* Reduced motion accessibility */
         @media (prefers-reduced-motion: reduce) {
-            .loading-container,
-            .loading-brand,
-            .loading-progress {
+            .loading-container, .loading-brand, .loading-progress {
                 animation: none !important;
             }
 
-            .blazor-ready .loading-container {
-                transition: opacity 0.5s ease;
-                opacity: 0;
-            }
+                .loading-container.dismissing {
+                    transition: opacity 0.4s ease;
+                    opacity: 0;
+                }
         }
 
-        /* Performance optimization hints */
         * {
             -webkit-tap-highlight-color: transparent;
         }
     </style>
-
 </head>
 
 <body>
+    <!-- ═══════════════════════════════════════════════════════════
+         📦 BLAZOR APP ROOT
+         ═══════════════════════════════════════════════════════════ -->
     <div id="app">
-        <!-- ⚡ BUTTERY SMOOTH LOADING SCREEN -->
-        <div class="loading-container" aria-live="polite" aria-label="Loading application">
+        <div class="loading-container" id="innoteksoLoader" aria-live="polite" aria-label="Loading application">
             <div class="loading-brand">
                 <h1 class="loading-title">
                     inn<span class="loading-title-highlight">o</span>tekso
                 </h1>
                 <p class="loading-subtitle">Innovation Meets Technology</p>
             </div>
-
             <div class="loading-progress-container">
                 <div class="loading-bar">
                     <div class="loading-progress"></div>
                 </div>
-
-                <p class="loading-text" id="loadingText">
-                    Preparing your experience...
-                </p>
+                <p class="loading-text" id="loadingText">Preparing your experience...</p>
             </div>
         </div>
     </div>
 
+    <!-- Error UI -->
     <div id="blazor-error-ui" class="shadow" role="alert">
         <div class="error-message">
             <div>
                 <i class="fas fa-exclamation-triangle text-danger me-2"></i>
-                Innotekso – An error has occurred. Please reload the page.
+                Innotekso — An error has occurred. Please reload the page.
                 <a href="." class="reload">Reload</a>
             </div>
-            <span class="dismiss">×</span>
+            <span class="dismiss">&times;</span>
         </div>
     </div>
 
-    <!-- ⚡ Loading animation controller -->
+    <!-- ═══════════════════════════════════════════════════════════
+         ⏳ LOADER CONTROLLER
+         ═══════════════════════════════════════════════════════════
+         • Rotates status text while waiting.
+         • Exposes window.innoteksoLoader.dismiss() for MainLayout.
+         • dismiss() uses requestAnimationFrame so the browser has
+           painted the Blazor output before the loader exits.
+         • 12-second hard timeout as safety net — if Blazor never
+           signals (unhandled exception, WASM failure, etc.) the
+           loader disappears so the user isn't stuck forever.
+         ═══════════════════════════════════════════════════════════ -->
     <script>
         (function () {
-            const messages = [
+            var loader = document.getElementById('innoteksoLoader');
+            var textEl = document.getElementById('loadingText');
+            var msgs = [
                 'Preparing your experience',
                 'Loading innovative solutions',
                 'Connecting to the cloud',
-                'Almost ready',
-                'Starting up'
+                'Almost ready'
             ];
+            var msgIdx = 0;
+            var done = false;
 
-            let msgIndex = 0;
-            const loadingText = document.getElementById('loadingText');
-
-            function updateText() {
-                if (loadingText && !document.body.classList.contains('blazor-ready')) {
-                    loadingText.textContent = messages[msgIndex] + '...';
-                    msgIndex = (msgIndex + 1) % messages.length;
+            // ── rotate status text every 1.8 s ──────────────────────
+            var textTimer = setInterval(function () {
+                if (!done && textEl) {
+                    textEl.textContent = msgs[msgIdx % msgs.length] + '\u2026';
+                    msgIdx++;
                 }
-            }
+            }, 1800);
 
-            // Update every 2 seconds
-            const textInterval = setInterval(updateText, 2000);
+            // ── the single entry-point MainLayout.razor calls ───────
+            window.innoteksoLoader = {
+                dismiss: function () {
+                    if (done) return;       // idempotent
+                    done = true;
+                    clearInterval(textTimer);
 
-            // Trigger smooth fade when Blazor loads
-            window.addEventListener('load', function () {
-                // Small delay before starting fade
-                setTimeout(function () {
-                    clearInterval(textInterval);
-
-                    // Request animation frame for smooth start
+                    // rAF guarantees the browser has committed the current
+                    // frame — i.e. Blazor's rendered output (including the
+                    // cookie banner state) is visible before we animate out.
                     requestAnimationFrame(function () {
-                        document.body.classList.add('blazor-ready');
-                    });
+                        if (!loader) return;
 
-                    // Remove from DOM after animation completes (1.4s animation + 0.1s buffer)
-                    setTimeout(function () {
-                        document.body.classList.add('blazor-loaded');
-                    }, 1500);
-                }, 200);
-            });
+                        loader.classList.add('dismissing');
+
+                        // Pull from layout after the CSS transition ends
+                        loader.addEventListener('transitionend', function onEnd() {
+                            loader.removeEventListener('transitionend', onEnd);
+                            loader.classList.add('dismissed');
+                        }, { once: true });
+
+                        // Safety: force-remove if transitionend never fires
+                        // (e.g. prefers-reduced-motion skips the transition)
+                        setTimeout(function () {
+                            loader.classList.add('dismissed');
+                        }, 1400);
+                    });
+                }
+            };
+
+            // ── 12-second hard safety timeout ───────────────────────
+            setTimeout(function () {
+                window.innoteksoLoader.dismiss();
+            }, 12000);
         })();
     </script>
 
-    <!-- Scripts -->
+    <!-- ═══════════════════════════════════════════════════════════
+         📜 SCRIPTS
+         ═══════════════════════════════════════════════════════════ -->
     <script src="_framework/blazor.webassembly.js" defer></script>
     <script src="js/bootstrap.bundle.min.js" defer></script>
     <script src="_content/Blazor.Bootstrap/blazor.bootstrap.js" defer></script>
     <script type="module" src="js/site.js" defer></script>
-    <!--<script src="service-worker.js"></script>-->
 
-    <!-- ⚡ Service Worker Registration -->
-    <!--<script>
+    <!-- ═══════════════════════════════════════════════════════════
+         🛡️  SERVICE WORKER
+         ═══════════════════════════════════════════════════════════ -->
+    <script>
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js')
-                .then(function (reg) {
-                    console.log('✅ Service Worker registered');
-                })
-                .catch(function (err) {
-                    console.log('❌ Service Worker registration failed:', err);
-                });
+            navigator.serviceWorker.register('service-worker.js').catch(function () { });
         }
-    </script>-->
+    </script>
 </body>
 </html>

@@ -1,0 +1,19 @@
+# ═══════════════════════════════════════════════════════════════════
+# robots.txt — Innotekso
+# Place in: wwwroot/robots.txt
+# ═══════════════════════════════════════════════════════════════════
+
+User-agent: *
+Allow: /
+
+# Block Blazor internal framework assets — no crawl value
+Disallow: /_framework/
+Disallow: /_content/
+
+# Block build artefacts that should never be public
+Disallow: /.env
+Disallow: /bin/
+Disallow: /obj/
+
+# Sitemap declaration
+Sitemap: https://innotekso.co.za/sitemap.xml
